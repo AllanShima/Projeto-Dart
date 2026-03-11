@@ -1,14 +1,14 @@
-//enums de dificuldade do cachepoint
-enum Dificuldade {
-  facil,
-  medio,
-  dificil,
-  extremo;
+//enums de DificultyLevel do cachepoint
+enum DificultyLevel {
+  easy,
+  medium,
+  hard,
+  extreme;
 
-  static Dificuldade fromString(String value) {
-    return Dificuldade.values.firstWhere(
+  static DificultyLevel fromString(String value) {
+    return DificultyLevel.values.firstWhere(
       (e) => e.name == value.toLowerCase(),
-      orElse: () => Dificuldade.medio,
+      orElse: () => DificultyLevel.medium,
     );
   }
 
@@ -17,13 +17,13 @@ enum Dificuldade {
 //"etiqueta pra exibicao na UI"
   String get label {
     switch (this) {
-      case Dificuldade.facil:
+      case DificultyLevel.easy:
         return 'Fácil';
-      case Dificuldade.medio:
+      case DificultyLevel.medium:
         return 'Médio';
-      case Dificuldade.dificil:
+      case DificultyLevel.hard:
         return 'Difícil';
-      case Dificuldade.extremo:
+      case DificultyLevel.extreme:
         return 'Extremo';
     }
   }
@@ -31,15 +31,15 @@ enum Dificuldade {
 
 //enums de status do cachepoint
 enum CachePointStatus {
-  ativo,
-  inativo,
-  pendente,
-  removido;
+  active,
+  inactive,
+  pending,
+  removed;
 
   static CachePointStatus fromString(String value) {
     return CachePointStatus.values.firstWhere(
       (e) => e.name == value.toLowerCase(),
-      orElse: () => CachePointStatus.ativo,
+      orElse: () => CachePointStatus.active,
     );
   }
 
@@ -47,34 +47,34 @@ enum CachePointStatus {
 
   String get label {
     switch (this) {
-      case CachePointStatus.ativo:
+      case CachePointStatus.active:
         return 'Ativo';
-      case CachePointStatus.inativo:
+      case CachePointStatus.inactive:
         return 'Inativo';
-      case CachePointStatus.pendente:
+      case CachePointStatus.pending:
         return 'Pendente';
-      case CachePointStatus.removido:
+      case CachePointStatus.removed:
         return 'Removido';
     }
   }
 }
 
 //enums de nota pra avaliacao dos caches
-enum Pontuacao {
-  um(1),
-  dois(2),
-  tres(3),
-  quatro(4),
-  cinco(5);
+enum Grade {
+  one(1),
+  two(2),
+  three(3),
+  four(4),
+  five(5);
 
-  const Pontuacao(this.value);
+  const Grade(this.value);
 
   final int value;
 
-  static Pontuacao fromInt(int value) {
-    return Pontuacao.values.firstWhere(
+  static Grade fromInt(int value) {
+    return Grade.values.firstWhere(
       (e) => e.value == value,
-      orElse: () => Pontuacao.tres,
+      orElse: () => Grade.three,
     );
   }
 

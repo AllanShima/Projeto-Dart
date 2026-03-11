@@ -1,11 +1,11 @@
 import 'package:projeto_integrador/models/enums.dart';
 
-class Avaliacao {
-  const Avaliacao({
+class Evaluation {
+  const Evaluation({
     required this.id,
     required this.userId,
     required this.cachePointId,
-    required this.pontuacao,
+    required this.grade,
     required this.comment,
     required this.evaluatedAt,
   });
@@ -13,16 +13,16 @@ class Avaliacao {
   final String id;
   final String userId;
   final String cachePointId;
-  final Pontuacao pontuacao;
+  final Grade grade;
   final String comment;
   final DateTime evaluatedAt;
 
-  factory Avaliacao.fromJson(Map<String, dynamic> json) {
-    return Avaliacao(
+  factory Evaluation.fromJson(Map<String, dynamic> json) {
+    return Evaluation(
       id: json['id'] as String,
       userId: json['user_id'] as String,
       cachePointId: json['cache_point_id'] as String,
-      pontuacao: Pontuacao.fromInt(json['pontuacao'] as int),
+      grade: Grade.fromInt(json['grade'] as int),
       comment: json['comment'] as String,
       evaluatedAt: DateTime.parse(json['evaluated_at'] as String),
     );
@@ -33,25 +33,25 @@ class Avaliacao {
       'id': id,
       'user_id': userId,
       'cache_point_id': cachePointId,
-      'pontuacao': pontuacao.toJson(),
+      'grade': grade.toJson(),
       'comment': comment,
       'evaluated_at': evaluatedAt.toIso8601String(),
     };
   }
 
-  Avaliacao copyWith({
+  Evaluation copyWith({
     String? id,
     String? userId,
     String? cachePointId,
-    Pontuacao? pontuacao,
+    Grade? grade,
     String? comment,
     DateTime? evaluatedAt,
   }) {
-    return Avaliacao(
+    return Evaluation(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       cachePointId: cachePointId ?? this.cachePointId,
-      pontuacao: pontuacao ?? this.pontuacao,
+      grade: grade ?? this.grade,
       comment: comment ?? this.comment,
       evaluatedAt: evaluatedAt ?? this.evaluatedAt,
     );
@@ -60,13 +60,8 @@ class Avaliacao {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Avaliacao &&
-        other.id == id &&
-        other.userId == userId &&
-        other.cachePointId == cachePointId &&
-        other.pontuacao == pontuacao &&
-        other.comment == comment &&
-        other.evaluatedAt == evaluatedAt;
+    return other is Evaluation &&
+        other.id == id;
   }
 
   @override
@@ -74,12 +69,12 @@ class Avaliacao {
         id,
         userId,
         cachePointId,
-        pontuacao,
+        grade,
         comment,
         evaluatedAt,
       );
 
   @override
-  String toString() => 'Avaliacao(id: $id, cachePointId: $cachePointId, '
-      'pontuacao: $pontuacao, userId: $userId)';
+  String toString() => 'Evaluation(id: $id, cachePointId: $cachePointId, '
+      'grade: $grade, userId: $userId)';
 }

@@ -3,24 +3,24 @@ import 'package:projeto_integrador/models/enums.dart';
 class CachePoint {
   const CachePoint({
     required this.id,
-    required this.titulo,
-    required this.descricao,
+    required this.title,
+    required this.description,
     required this.latitude,
     required this.longitude,
-    required this.dificuldade,
+    required this.dificultyLevel,
     required this.qrCodeContent,
     required this.qrCodeImageUrl,
     required this.creatorId,
     required this.createdAt,
-    this.status = CachePointStatus.ativo,
+    this.status = CachePointStatus.active,
   });
 
   final String id;
-  final String titulo;
-  final String descricao;
+  final String title;
+  final String description;
   final double latitude;
   final double longitude;
-  final Dificuldade dificuldade;
+  final DificultyLevel dificultyLevel;
 
   /// String única codificada no QR Code físico para validar a presença.
   final String qrCodeContent;
@@ -39,11 +39,11 @@ class CachePoint {
   factory CachePoint.fromJson(Map<String, dynamic> json) {
     return CachePoint(
       id: json['id'] as String,
-      titulo: json['titulo'] as String,
-      descricao: json['descricao'] as String,
+      title: json['title'] as String,
+      description: json['description'] as String,
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
-      dificuldade: Dificuldade.fromString(
+      dificultyLevel: DificultyLevel.fromString(
         json['difficulty_level'] as String,
       ),
       qrCodeContent: json['qr_code_content'] as String,
@@ -59,11 +59,11 @@ class CachePoint {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'titulo': titulo,
-      'descricao': descricao,
+      'title': title,
+      'description': description,
       'latitude': latitude,
       'longitude': longitude,
-      'dificuldade': dificuldade.toJson(),
+      'difficulty_level': dificultyLevel.toJson(),
       'qr_code_content': qrCodeContent,
       'qr_code_image_url': qrCodeImageUrl,
       'creator_id': creatorId,
@@ -74,11 +74,11 @@ class CachePoint {
 
   CachePoint copyWith({
     String? id,
-    String? titulo,
-    String? descricao,
+    String? title,
+    String? description,
     double? latitude,
     double? longitude,
-    Dificuldade? dificuldade,
+    DificultyLevel? dificultyLevel,
     String? qrCodeContent,
     String? qrCodeImageUrl,
     String? creatorId,
@@ -87,11 +87,11 @@ class CachePoint {
   }) {
     return CachePoint(
       id: id ?? this.id,
-      titulo: titulo ?? this.titulo,
-      descricao: descricao ?? this.descricao,
+      title: title ?? this.title,
+      description: description ?? this.description,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
-      dificuldade: dificuldade ?? this.dificuldade,
+      dificultyLevel: dificultyLevel ?? this.dificultyLevel,
       qrCodeContent: qrCodeContent ?? this.qrCodeContent,
       qrCodeImageUrl: qrCodeImageUrl ?? this.qrCodeImageUrl,
       creatorId: creatorId ?? this.creatorId,
@@ -104,27 +104,17 @@ class CachePoint {
   bool operator ==(Object other) =>
       identical(this, other) ||
         other is CachePoint &&
-        other.id == id &&
-        other.titulo == titulo &&
-        other.descricao == descricao &&
-        other.latitude == latitude &&
-        other.longitude == longitude &&
-        other.dificuldade == dificuldade &&
-        other.qrCodeContent == qrCodeContent &&
-        other.qrCodeImageUrl == qrCodeImageUrl &&
-        other.creatorId == creatorId &&
-        other.createdAt == createdAt &&
-        other.status == status;
+        other.id == id;
 
 
   @override
   int get hashCode => Object.hash(
         id,
-        titulo,
-        descricao,
+        title,
+        description,
         latitude,
         longitude,
-        dificuldade,
+        dificultyLevel,
         qrCodeContent,
         qrCodeImageUrl,
         creatorId,
@@ -133,7 +123,7 @@ class CachePoint {
       );
 
   @override
-  String toString() => 'CachePoint(id: $id, titulo: $titulo, '
+  String toString() => 'CachePoint(id: $id, title: $title, '
       'latitude: $latitude, longitude: $longitude, '
-      'difficulty: ${dificuldade.name}, status: ${status.name})';
+      'difficulty: ${dificultyLevel.name}, status: ${status.name})';
 }
