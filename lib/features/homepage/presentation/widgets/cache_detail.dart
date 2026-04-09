@@ -58,10 +58,11 @@ class CacheDetailCard extends StatelessWidget {
             height: 200,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: const Color.fromARGB(255, 224, 224, 224),
               image: const DecorationImage(
-                image: AssetImage('assets/map_background.png'),
+                image: AssetImage('assets/images/geocache_background.jpg'),
                 fit: BoxFit.cover,
+                opacity: 0.3,
               ),
             ),
             child: Center(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../homepage/presentation/screens/addcache_modal_screen.dart';
 import '../../domain/models/geocache.dart';
 import '../widgets/cache_detail.dart';
 import '../widgets/cache_list_item.dart';
@@ -178,29 +179,43 @@ class _HomepageScreenState extends State<HomepageScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
-                              vertical: 8,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.blue[800],
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  size: 16,
-                                  color: Colors.blue[100],
+                            child: ElevatedButton(
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) => const AddCacheModal()
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Novo',
-                                  style: TextStyle(
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.add,
+                                    size: 16,
                                     color: Colors.blue[50],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    'Novo',
+                                    style: TextStyle(
+                                      color: Colors.blue[50],
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],

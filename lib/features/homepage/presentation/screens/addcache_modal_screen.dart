@@ -23,50 +23,53 @@ class _AddCacheModalState extends State<AddCacheModal> {
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
         constraints: const BoxConstraints(maxWidth: 800),
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
         child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(context),
-              const SizedBox(height: 16),
-              _buildAddressInput(),
-              const SizedBox(height: 16),
-              _buildMapPlaceholder(),
-              const SizedBox(height: 24),
-              
-              // Grid de inputs
-              Row(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 30, 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(child: _buildDescriptionField()),
-                  const SizedBox(width: 24),
-                  Expanded(child: _buildHintSection()),
+                  _buildHeader(context),
+                  const SizedBox(height: 16),
+                  _buildAddressInput(),
+                  const SizedBox(height: 16),
+                  _buildMapPlaceholder(),
+                  const SizedBox(height: 24),
+                  
+                  // Grid de inputs
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(child: _buildDescriptionField()),
+                      const SizedBox(width: 24),
+                      Expanded(child: _buildHintSection()),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  Row(
+                    children: [
+                      Expanded(child: _buildDropdown('Tipo de Cache', ['Tradicional', 'Mistério', 'Multi'])),
+                      const SizedBox(width: 24),
+                      Expanded(child: _buildDropdown('Tamanho', ['Micro', 'Pequeno', 'Regular', 'Grande'])),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  
+                  Row(
+                    children: [
+                      Expanded(child: _buildRatingSelector('Dificuldade', difficulty, (val) => setState(() => difficulty = val))),
+                      const SizedBox(width: 24),
+                      Expanded(child: _buildRatingSelector('Terreno', terrain, (val) => setState(() => terrain = val))),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  _buildSubmitButton(),
                 ],
               ),
-              const SizedBox(height: 24),
-              
-              Row(
-                children: [
-                  Expanded(child: _buildDropdown('Tipo de Cache', ['Tradicional', 'Mistério', 'Multi'])),
-                  const SizedBox(width: 24),
-                  Expanded(child: _buildDropdown('Tamanho', ['Micro', 'Pequeno', 'Regular', 'Grande'])),
-                ],
-              ),
-              const SizedBox(height: 24),
-              
-              Row(
-                children: [
-                  Expanded(child: _buildRatingSelector('Dificuldade', difficulty, (val) => setState(() => difficulty = val))),
-                  const SizedBox(width: 24),
-                  Expanded(child: _buildRatingSelector('Terreno', terrain, (val) => setState(() => terrain = val))),
-                ],
-              ),
-              const SizedBox(height: 32),
-              
-              _buildSubmitButton(),
-            ],
           ),
         ),
       ),
@@ -118,8 +121,9 @@ class _AddCacheModalState extends State<AddCacheModal> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         image: const DecorationImage(
-          image: NetworkImage('https://placeholder.com/map_bg'), // Substituir por imagem real ou Google Maps
+          image: AssetImage('assets/images/geocache_background.jpg'), // gfdhjgvbfdjivjilbfdis
           fit: BoxFit.cover,
+          opacity: 0.3,
           colorFilter: ColorFilter.mode(Colors.black26, BlendMode.darken),
         ),
       ),
@@ -166,7 +170,8 @@ class _AddCacheModalState extends State<AddCacheModal> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Adicionar Dica', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0D47A1))),
+        const Text('Adicionar Dica', 
+          style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0D47A1))),
         const SizedBox(height: 8),
         ToggleButtons(
           borderRadius: BorderRadius.circular(8),
@@ -175,14 +180,28 @@ class _AddCacheModalState extends State<AddCacheModal> {
           constraints: const BoxConstraints(minHeight: 36, minWidth: 60),
           children: const [Text('Sim'), Text('Não')],
         ),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            hintText: 'Ex: Onde sons ecoam...',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            fillColor: Colors.grey[50],
-            filled: true,
-          ),
+        
+        // Envolvendo a lógica de exibição com animação
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300), // Velocidade da animação
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            // Faz o campo aparecer deslizando ou apenas com fade
+            return FadeTransition(opacity: animation, child: child);
+          },
+          child: hasHint 
+            ? Padding(
+                key: const ValueKey('textFieldVisible'), // CHAVE ÚNICA: Essencial para o Switcher funcionar
+                padding: const EdgeInsets.only(top: 16),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Ex: Onde sons ecoam...',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                    fillColor: Colors.grey[50],
+                    filled: true,
+                  ),
+                ),
+              )
+            : const SizedBox(key: ValueKey('textFieldHidden')), // Widget vazio com chave diferente
         ),
       ],
     );
