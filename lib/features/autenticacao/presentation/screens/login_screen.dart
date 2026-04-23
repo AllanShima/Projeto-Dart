@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         _onSubmit();
 
-                        context.go('/homepage'); 
+                        context.go('/'); 
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
