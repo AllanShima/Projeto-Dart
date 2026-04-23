@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:projeto_integrador/router.dart';
 
 import '../widgets/side_panel.dart';
 import '../widgets/layout.dart';
@@ -32,6 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
     print('--- Tentativa de Login ---');
     print('Email: $email');
     print('Senha: $password');
+
+    servicoAuth.login();
   }
 
   @override
@@ -98,12 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         _onSubmit();
 
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomepageScreen(),
-                          ),
-                        );
+                        context.go('/homepage'); 
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,
