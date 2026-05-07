@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_header.dart';
 import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop.dart';
-
-import '../../../homepage/presentation/screens/addcache_modal_screen.dart';
 import '../../domain/models/geocache.dart';
-import '../widgets/cache_detail.dart';
-import '../widgets/cache_list_item.dart';
 
 // ============= SCREEN PRINCIPAL =============
 class HomepageScreen extends StatefulWidget {
@@ -35,6 +31,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       latitude: -23.5505,
       longitude: -46.6333,
       badge: 'traditional',
+      totalFound: 12,
+      createdAt: "12/05/2024"
     ),
     GeoCache(
       name: 'Trilha da Cachoeira',
@@ -48,6 +46,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Cuidado com pedras soltas na trilha',
       latitude: -23.4405,
       longitude: -46.6833,
+      totalFound: 122,
+      createdAt: "12/05/2023"
     ),
     GeoCache(
       name: 'Centro Histórico',
@@ -62,6 +62,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Leve uma moeda de 1 real',
       latitude: -23.5605,
       longitude: -46.6233,
+      totalFound: 14,
+      createdAt: "11/03/2022"
     ),
     GeoCache(
       name: 'Praça das Artes',
@@ -75,6 +77,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Próximo ao palco do lado direito',
       latitude: -23.5705,
       longitude: -46.6433,
+      totalFound: 20,
+      createdAt: "12/08/2025"
     ),
   ];
 
@@ -99,7 +103,7 @@ class _HomepageScreenState extends State<HomepageScreen> {
 
     return Scaffold(
       appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(80.0), // Defina a altura que você deseja
+          preferredSize: const Size.fromHeight(80.0),
           child: const HomepageHeader(),
         ),
       backgroundColor: Colors.grey[50],
@@ -107,24 +111,24 @@ class _HomepageScreenState extends State<HomepageScreen> {
         children: [
           Expanded(
             child: HomepageDesktop(
-              selectedFilter: selectedFilter, // Sem o "widget."
+              selectedFilter: selectedFilter,
               selectedCacheIndex: selectedCacheIndex,
               searchQuery: searchQuery,
-              filteredCaches: listaParaExibir, // Usa o getter filteredCaches
+              filteredCaches: listaParaExibir,
             
               onSearchChanged: (novoTexto) {
                 setState(() {
-                  searchQuery = novoTexto; // Nome corrigido
+                  searchQuery = novoTexto;
                 });
               },
               onFilterChanged: (novoFiltro) {
                 setState(() {
-                  selectedFilter = novoFiltro; // Nome corrigido
+                  selectedFilter = novoFiltro;
                 });
               },
               onCacheSelected: (novoIndex) {
                 setState(() {
-                  selectedCacheIndex = novoIndex; // Nome corrigido
+                  selectedCacheIndex = novoIndex;
                 });
               },
             ),
@@ -134,24 +138,3 @@ class _HomepageScreenState extends State<HomepageScreen> {
     );
   }
 }
-
-// ============= MAIN =============
-// void main() {
-//   runApp(const App());
-// }
-
-// class App extends StatelessWidget {
-//   const App({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'GeoQuest',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//         useMaterial3: true,
-//       ),
-//       home: const HomepageScreen(),
-//     );
-//   }
-// }

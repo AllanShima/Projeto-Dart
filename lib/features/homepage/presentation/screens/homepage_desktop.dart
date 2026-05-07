@@ -8,7 +8,7 @@ class HomepageDesktop extends StatefulWidget {
   final FilterType selectedFilter;
   final int selectedCacheIndex;
   final String searchQuery;
-  final List<GeoCache> filteredCaches; // Passe a lista filtrada também!
+  final List<GeoCache> filteredCaches;
 
   // As ações (O que ele faz quando o usuário interage)
   final Function(String) onSearchChanged;
