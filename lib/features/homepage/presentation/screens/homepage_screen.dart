@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_header.dart';
-import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_sidepanel.dart';
+import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop.dart';
 
 import '../../../homepage/presentation/screens/addcache_modal_screen.dart';
 import '../../domain/models/geocache.dart';
@@ -93,37 +93,42 @@ class _HomepageScreenState extends State<HomepageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentCache = filteredCaches.isNotEmpty
-        ? filteredCaches[
-            selectedCacheIndex.clamp(0, filteredCaches.length - 1)]
-        : caches[0];
+
+    // Pegamos a lista filtrada uma vez para usar no widget abaixo
+    final listaParaExibir = filteredCaches;
 
     return Scaffold(
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(80.0), // Defina a altura que você deseja
+          child: const HomepageHeader(),
+        ),
       backgroundColor: Colors.grey[50],
       body: Column(
         children: [
-          const HomepageHeader(),
-          const HomepageSidepanel(
-                  // Passando os valores das variáveis da sua Home
-                  selectedFilter: widget.selectedFilter,
-                  selectedCacheIndex: _currentIndex,
-                  searchQuery: _currentSearch,
-                  filteredCaches: _minhaListaFiltrada,
-
-                  // Passando o que deve ser feito quando algo mudar
-                  onSearchChanged: (novoTexto) {
-                    setState(() {
-                      _currentSearch = novoTexto;
-                      // Você pode filtrar a lista aqui mesmo na Home
-                    });
-                  },
-                  onFilterChanged: (novoFiltro) {
-                    setState(() => _currentFilter = novoFiltro);
-                  },
-                  onCacheSelected: (novoIndex) {
-                    setState(() => _currentIndex = novoIndex);
-                  },
-                )
+          Expanded(
+            child: HomepageDesktop(
+              selectedFilter: selectedFilter, // Sem o "widget."
+              selectedCacheIndex: selectedCacheIndex,
+              searchQuery: searchQuery,
+              filteredCaches: listaParaExibir, // Usa o getter filteredCaches
+            
+              onSearchChanged: (novoTexto) {
+                setState(() {
+                  searchQuery = novoTexto; // Nome corrigido
+                });
+              },
+              onFilterChanged: (novoFiltro) {
+                setState(() {
+                  selectedFilter = novoFiltro; // Nome corrigido
+                });
+              },
+              onCacheSelected: (novoIndex) {
+                setState(() {
+                  selectedCacheIndex = novoIndex; // Nome corrigido
+                });
+              },
+            ),
+          )
         ],
       ),
     );

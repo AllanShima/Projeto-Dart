@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../router.dart';
 import 'package:projeto_integrador/features/homepage/presentation/screens/addcache_modal_screen.dart';
 
 class HomepageHeader extends StatefulWidget {
@@ -11,122 +13,135 @@ class HomepageHeader extends StatefulWidget {
 class _HomepageHeaderState extends State<HomepageHeader> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue[900],
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return AppBar(
+      
+      toolbarHeight: 80.0, // Defina a mesma altura aqui!
+      backgroundColor: const Color.fromARGB(255, 2, 61, 138),
+      elevation: 5,
+      // O 'title' agora contém o Logo + Textos
+      title: Row(
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.location_on,
-                color: Colors.white,
-                size: 24,
-              ),
-              const SizedBox(width: 8),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'GeoQuest Desktop',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    'Encontre tesouros escondidos',
-                    style: TextStyle(
-                      color: Colors.blue[100],
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          Image.asset(
+            "assets/images/logo.png",
+            width: 40,
+            height: 40,
+            color: Colors.white,
           ),
-          const SizedBox(height: 16),
-          Row(
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // Importante para não quebrar na AppBar
             children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[800],
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.info_outline,
-                        size: 16,
-                        color: Colors.blue[100],
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '24 Encontrados',
-                        style: TextStyle(
-                          color: Colors.blue[50],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              const Text(
+                "GeoQuest Desktop",
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.blue[800],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: ElevatedButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => const AddCacheModal()
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.add,
-                        size: 16,
-                        color: Colors.blue[50],
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Novo',
-                        style: TextStyle(
-                          color: Colors.blue[50],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
+              Text(
+                "Encontre tesouros escondidos",
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.white.withOpacity(0.8),
+                  fontWeight: FontWeight.normal,
                 ),
               ),
             ],
           ),
         ],
       ),
+      actions: [
+        // Badge de "Encontrados"
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.blue[800],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.info_outline, size: 16, color: Colors.blue[100]),
+              const SizedBox(width: 8),
+              Text(
+                '24 Encontrados',
+                style: TextStyle(color: Colors.blue[50], fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 8),
+        // Botão "Novo"
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.blue[800],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: TextButton.icon( // TextButton.icon é mais simples que Row dentro de ElevatedButton
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const AddCacheModal(),
+              );
+            },
+            icon: const Icon(Icons.add, size: 16, color: Colors.white),
+            label: const Text(
+              'Novo',
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        ),
+        IconButton(
+          onPressed: () => {
+            servicoAuth.logout(),
+            context.go('/login')
+          },
+          icon: const Icon(Icons.exit_to_app, color: Colors.white),
+        ),
+        const SizedBox(width: 8), // Margem final
+      ],
     );
   }
 }
+
+      // color: Colors.blue[900],
+      // padding: const EdgeInsets.all(16),
+      // child: Column(
+      //   crossAxisAlignment: CrossAxisAlignment.start,
+      //   children: [
+      //     Row(
+      //       children: [
+      //         Icon(
+      //           Icons.location_on,
+      //           color: Colors.white,
+      //           size: 24,
+      //         ),
+      //         const SizedBox(width: 8),
+      //         Column(
+      //           crossAxisAlignment: CrossAxisAlignment.start,
+      //           children: [
+      //             const Text(
+      //               'GeoQuest Desktop',
+      //               style: TextStyle(
+      //                 color: Colors.white,
+      //                 fontSize: 16,
+      //                 fontWeight: FontWeight.w700,
+      //               ),
+      //             ),
+      //             Text(
+      //               'Encontre tesouros escondidos',
+      //               style: TextStyle(
+      //                 color: Colors.blue[100],
+      //                 fontSize: 12,
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //       ],
+      //     ),
+      //     const SizedBox(height: 16),
+      //     Row(
+
+      //     ),
+      //   ],
+      // ),
