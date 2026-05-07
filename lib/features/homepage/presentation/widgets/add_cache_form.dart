@@ -67,7 +67,10 @@ class _AddCacheFormState extends State<AddCacheForm> {
             backgroundColor: Colors.green.shade700,
             behavior: SnackBarBehavior.fixed,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
             ),
             duration: const Duration(milliseconds: 2000),
             showCloseIcon: true,
@@ -89,7 +92,10 @@ class _AddCacheFormState extends State<AddCacheForm> {
             backgroundColor: Colors.red.shade700,
             behavior: SnackBarBehavior.fixed,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
             ),
             duration: const Duration(milliseconds: 2000),
             showCloseIcon: true,
@@ -103,6 +109,9 @@ class _AddCacheFormState extends State<AddCacheForm> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 600;
+
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -151,82 +160,13 @@ class _AddCacheFormState extends State<AddCacheForm> {
           const _MapPlaceholder(),
           const SizedBox(height: 24),
 
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: _DescriptionField(
-                  controller: _descriptionController,
-                  focusNode: _descriptionFocus,
-                  onFieldSubmitted: (_) {
-                    if (_hasHint) {
-                      FocusScope.of(context).requestFocus(_hintFocus);
-                    } else {
-                      FocusScope.of(context).unfocus();
-                    }
-                  },
-                ),
-              ),
-              const SizedBox(width: 24),
-              Expanded(
-                child: _HintSection(
-                  hasHint: _hasHint,
-                  hintController: _hintController,
-                  hintFocus: _hintFocus,
-                  onToggle: (value) => setState(() => _hasHint = value),
-                  onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-                ),
-              ),
-            ],
-          ),
+          _buildDescriptionHintSection(isSmallScreen),
           const SizedBox(height: 24),
 
-          Row(
-            children: [
-              Expanded(
-                child: LabeledDropdown<String>(
-                  label: 'Tipo de Cache',
-                  items: _cacheTypes,
-                  itemLabel: (e) => e,
-                  value: _cacheType,
-                  onChanged: (val) => setState(() => _cacheType = val),
-                  validator: CacheValidators.dropdown(fieldName: 'O tipo'),
-                ),
-              ),
-              const SizedBox(width: 24),
-              Expanded(
-                child: LabeledDropdown<String>(
-                  label: 'Tamanho',
-                  items: _cacheSizes,
-                  itemLabel: (e) => e,
-                  value: _cacheSize,
-                  onChanged: (val) => setState(() => _cacheSize = val),
-                  validator: CacheValidators.dropdown(fieldName: 'O tamanho'),
-                ),
-              ),
-            ],
-          ),
+          _buildDropdownsSection(isSmallScreen),
           const SizedBox(height: 24),
 
-          Row(
-            children: [
-              Expanded(
-                child: RatingSelector(
-                  label: 'Dificuldade',
-                  value: _difficulty,
-                  onChanged: (val) => setState(() => _difficulty = val),
-                ),
-              ),
-              const SizedBox(width: 24),
-              Expanded(
-                child: RatingSelector(
-                  label: 'Terreno',
-                  value: _terrain,
-                  onChanged: (val) => setState(() => _terrain = val),
-                ),
-              ),
-            ],
-          ),
+          _buildRatingsSection(isSmallScreen),
           const SizedBox(height: 32),
 
           _SubmitButton(
@@ -236,6 +176,155 @@ class _AddCacheFormState extends State<AddCacheForm> {
         ],
       ),
     );
+  }
+
+  Widget _buildDescriptionHintSection(bool isSmallScreen) {
+    if (isSmallScreen) {
+      return Column(
+        children: [
+          _DescriptionField(
+            controller: _descriptionController,
+            focusNode: _descriptionFocus,
+            onFieldSubmitted: (_) {
+              if (_hasHint) {
+                FocusScope.of(context).requestFocus(_hintFocus);
+              } else {
+                FocusScope.of(context).unfocus();
+              }
+            },
+          ),
+          const SizedBox(height: 24),
+          _HintSection(
+            hasHint: _hasHint,
+            hintController: _hintController,
+            hintFocus: _hintFocus,
+            onToggle: (value) => setState(() => _hasHint = value),
+            onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _DescriptionField(
+              controller: _descriptionController,
+              focusNode: _descriptionFocus,
+              onFieldSubmitted: (_) {
+                if (_hasHint) {
+                  FocusScope.of(context).requestFocus(_hintFocus);
+                } else {
+                  FocusScope.of(context).unfocus();
+                }
+              },
+            ),
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: _HintSection(
+              hasHint: _hasHint,
+              hintController: _hintController,
+              hintFocus: _hintFocus,
+              onToggle: (value) => setState(() => _hasHint = value),
+              onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget _buildDropdownsSection(bool isSmallScreen) {
+    if (isSmallScreen) {
+      return Column(
+        children: [
+          LabeledDropdown<String>(
+            label: 'Tipo de Cache',
+            items: _cacheTypes,
+            itemLabel: (e) => e,
+            value: _cacheType,
+            onChanged: (val) => setState(() => _cacheType = val),
+            validator: CacheValidators.dropdown(fieldName: 'O tipo'),
+          ),
+          const SizedBox(height: 16),
+          LabeledDropdown<String>(
+            label: 'Tamanho',
+            items: _cacheSizes,
+            itemLabel: (e) => e,
+            value: _cacheSize,
+            onChanged: (val) => setState(() => _cacheSize = val),
+            validator: CacheValidators.dropdown(fieldName: 'O tamanho'),
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Expanded(
+            child: LabeledDropdown<String>(
+              label: 'Tipo de Cache',
+              items: _cacheTypes,
+              itemLabel: (e) => e,
+              value: _cacheType,
+              onChanged: (val) => setState(() => _cacheType = val),
+              validator: CacheValidators.dropdown(fieldName: 'O tipo'),
+            ),
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: LabeledDropdown<String>(
+              label: 'Tamanho',
+              items: _cacheSizes,
+              itemLabel: (e) => e,
+              value: _cacheSize,
+              onChanged: (val) => setState(() => _cacheSize = val),
+              validator: CacheValidators.dropdown(fieldName: 'O tamanho'),
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  Widget _buildRatingsSection(bool isSmallScreen) {
+    if (isSmallScreen) {
+      return Column(
+        children: [
+          RatingSelector(
+            label: 'Dificuldade',
+            value: _difficulty,
+            onChanged: (val) => setState(() => _difficulty = val),
+          ),
+          const SizedBox(height: 16),
+          RatingSelector(
+            label: 'Terreno',
+            value: _terrain,
+            onChanged: (val) => setState(() => _terrain = val),
+          ),
+        ],
+      );
+    } else {
+      return Row(
+        children: [
+          Expanded(
+            child: RatingSelector(
+              label: 'Dificuldade',
+              value: _difficulty,
+              onChanged: (val) => setState(() => _difficulty = val),
+            ),
+          ),
+          const SizedBox(width: 24),
+          Expanded(
+            child: RatingSelector(
+              label: 'Terreno',
+              value: _terrain,
+              onChanged: (val) => setState(() => _terrain = val),
+            ),
+          ),
+        ],
+      );
+    }
   }
 }
 
