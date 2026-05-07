@@ -125,7 +125,7 @@ class CacheListItem extends StatelessWidget {
                     const SizedBox(width: 8),
                     DifficultyBadge(
                       level: 1,
-                      label: cache.duration,
+                      label: cache.type,
                     ),
                   ],
                 ),
