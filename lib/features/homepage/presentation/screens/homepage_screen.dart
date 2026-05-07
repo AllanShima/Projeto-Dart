@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_header.dart';
-import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_sidepanel.dart';
+import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop.dart';
 
-import '../../../homepage/presentation/screens/addcache_modal_screen.dart';
 import '../../domain/models/geocache.dart';
-import '../widgets/cache_detail.dart';
-import '../widgets/cache_list_item.dart';
 
-// ============= SCREEN PRINCIPAL =============
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({super.key});
 
@@ -35,6 +32,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       latitude: -23.5505,
       longitude: -46.6333,
       badge: 'traditional',
+      totalFound: 12,
+      createdAt: "12/05/2024"
     ),
     GeoCache(
       name: 'Trilha da Cachoeira',
@@ -48,6 +47,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Cuidado com pedras soltas na trilha',
       latitude: -23.4405,
       longitude: -46.6833,
+      totalFound: 122,
+      createdAt: "12/05/2023"
     ),
     GeoCache(
       name: 'Centro Histórico',
@@ -62,6 +63,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Leve uma moeda de 1 real',
       latitude: -23.5605,
       longitude: -46.6233,
+      totalFound: 14,
+      createdAt: "11/03/2022"
     ),
     GeoCache(
       name: 'Praça das Artes',
@@ -75,6 +78,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Próximo ao palco do lado direito',
       latitude: -23.5705,
       longitude: -46.6433,
+      totalFound: 20,
+      createdAt: "12/08/2025"
     ),
   ];
 
@@ -93,60 +98,44 @@ class _HomepageScreenState extends State<HomepageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentCache = filteredCaches.isNotEmpty
-        ? filteredCaches[
-            selectedCacheIndex.clamp(0, filteredCaches.length - 1)]
-        : caches[0];
+
+    // Pegamos a lista filtrada uma vez para usar no widget abaixo
+    final listaParaExibir = filteredCaches;
 
     return Scaffold(
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(80.0),
+          child: const HomepageHeader(),
+        ),
       backgroundColor: Colors.grey[50],
       body: Column(
         children: [
-          const HomepageHeader(),
-          const HomepageSidepanel(
-                  // Passando os valores das variáveis da sua Home
-                  selectedFilter: widget.selectedFilter,
-                  selectedCacheIndex: _currentIndex,
-                  searchQuery: _currentSearch,
-                  filteredCaches: _minhaListaFiltrada,
-
-                  // Passando o que deve ser feito quando algo mudar
-                  onSearchChanged: (novoTexto) {
-                    setState(() {
-                      _currentSearch = novoTexto;
-                      // Você pode filtrar a lista aqui mesmo na Home
-                    });
-                  },
-                  onFilterChanged: (novoFiltro) {
-                    setState(() => _currentFilter = novoFiltro);
-                  },
-                  onCacheSelected: (novoIndex) {
-                    setState(() => _currentIndex = novoIndex);
-                  },
-                )
+          Expanded(
+            child: HomepageDesktop(
+              selectedFilter: selectedFilter,
+              selectedCacheIndex: selectedCacheIndex,
+              searchQuery: searchQuery,
+              filteredCaches: listaParaExibir,
+            
+              onSearchChanged: (novoTexto) {
+                setState(() {
+                  searchQuery = novoTexto;
+                });
+              },
+              onFilterChanged: (novoFiltro) {
+                setState(() {
+                  selectedFilter = novoFiltro;
+                });
+              },
+              onCacheSelected: (novoIndex) {
+                setState(() {
+                  selectedCacheIndex = novoIndex;
+                });
+              },
+            ),
+          )
         ],
       ),
     );
   }
 }
-
-// ============= MAIN =============
-// void main() {
-//   runApp(const App());
-// }
-
-// class App extends StatelessWidget {
-//   const App({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'GeoQuest',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//         useMaterial3: true,
-//       ),
-//       home: const HomepageScreen(),
-//     );
-//   }
-// }

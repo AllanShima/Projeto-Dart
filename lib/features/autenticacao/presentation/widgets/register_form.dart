@@ -31,6 +31,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+
     _passwordFocus.dispose();
     _confirmPasswordFocus.dispose();
     super.dispose();

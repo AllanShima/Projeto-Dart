@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'star_rating.dart';
-import 'terrain_indicator.dart';
 import '../../domain/models/geocache.dart';
 
 /// Widget auxiliar para mostrar métrica
@@ -45,13 +43,12 @@ class CacheDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header com mapa simulado
           Container(
-            height: 200,
+            height: 300,
             width: double.infinity,
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 224, 224, 224),
@@ -144,14 +141,16 @@ class CacheDetailCard extends StatelessWidget {
               children: [
                 _MetricCard(
                   label: 'Dificuldade',
-                  child: StarRating(rating: cache.difficulty),
+                  child: Text('${(cache.difficulty).toString()}/5'),
+                  // StarRating(rating: cache.difficulty),
                 ),
                 _MetricCard(
                   label: 'Terreno',
-                  child: TerrainIndicator(
-                    level: cache.terrain,
-                    label: '',
-                  ),
+                  child: Text('${(cache.terrain).toString()}/5'),
+                  // TerrainIndicator(
+                  //   level: cache.terrain,
+                  //   label: '',
+                  // ),
                 ),
                 _MetricCard(
                   label: 'Distância',
@@ -205,7 +204,6 @@ class CacheDetailCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-
           // Dica
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -253,9 +251,102 @@ class CacheDetailCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          // Linha horizontal
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 20.0),
+            child: Container(
+                height: 1,
+                width: double.infinity,
+                color: Colors.grey,
+              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Tamanho",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.4
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        cache.type,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
+                          height: 1.4,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Data de Criação",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.4
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        cache.createdAt,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
+                          height: 1.4,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Encontrado por",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.4
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '${(cache.totalFound).toString()} pessoas',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
+                          height: 1.4,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
         ],
-      ),
-    );
+      );
   }
 }

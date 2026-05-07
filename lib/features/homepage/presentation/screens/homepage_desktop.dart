@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
 
-class HomepageSidepanel extends StatefulWidget {
+import 'package:projeto_integrador/features/homepage/presentation/widgets/cache_detail.dart';
+
+class HomepageDesktop extends StatefulWidget {
   // Os dados atuais (O que ele exibe)
   final FilterType selectedFilter;
   final int selectedCacheIndex;
   final String searchQuery;
-  final List<GeoCache> filteredCaches; // Passe a lista filtrada também!
+  final List<GeoCache> filteredCaches;
 
   // As ações (O que ele faz quando o usuário interage)
   final Function(String) onSearchChanged;
   final Function(FilterType) onFilterChanged;
   final Function(int) onCacheSelected;
 
-  const HomepageSidepanel({
+  const HomepageDesktop({
     super.key,
     required this.selectedFilter,
     required this.searchQuery,
@@ -25,18 +27,23 @@ class HomepageSidepanel extends StatefulWidget {
   });
 
   @override
-  State<HomepageSidepanel> createState() => _HomepageSidepanelState();
+  State<HomepageDesktop> createState() => _HomepageDesktopState();
 }
 
-class _HomepageSidepanelState extends State<HomepageSidepanel> {
+class _HomepageDesktopState extends State<HomepageDesktop> {
 
   @override
   Widget build(BuildContext context) {
+
+    final currentCache = widget.filteredCaches.isNotEmpty && widget.selectedCacheIndex < widget.filteredCaches.length
+        ? widget.filteredCaches[widget.selectedCacheIndex]
+        : null;
+
     return Row(
       children: [
         // Painel lateral com lista de caches
         SizedBox(
-          width: 300,
+          width: 350,
           child: Column(
             children: [
               // Header do painel
@@ -47,7 +54,7 @@ class _HomepageSidepanelState extends State<HomepageSidepanel> {
                   onChanged: (value) {
                     // Chama a função passada pelo pai
                     widget.onSearchChanged(value);
-                    widget.selectedCacheIndex = 0;
+                    widget.onCacheSelected(0);
                   },
                   decoration: InputDecoration(
                     hintText: 'Buscar Geocaches...',
@@ -68,22 +75,20 @@ class _HomepageSidepanelState extends State<HomepageSidepanel> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     FilterChip(
-                      label: const Text('Todos'),
-                      selected: widget.selectedFilter == FilterType.all,
-                      onSelected: (_) => widget.onFilterChanged(FilterType.all),
-                    ),
+                        label: const Text('Todos'),
+                        selected: widget.selectedFilter == FilterType.all,
+                        onSelected: (_) => widget.onFilterChanged(FilterType.all),
+                      ),
                     FilterChip(
-                      label: const Text('Encontrados'),
-                      selected: widget.selectedFilter == FilterType.found,
-                      onSelected: (_) => widget.selectedFilter(FilterType.found),
-                    ),
+                        label: const Text('Encontrados'),
+                        selected: widget.selectedFilter == FilterType.found,
+                        onSelected: (_) => widget.onFilterChanged(FilterType.found),
+                      ),
                     FilterChip(
-                      label: const Text('Pendente'),
-                      selected: widget.selectedFilter == FilterType.pending,
-                      onSelected: (bool selected) {
-                        setState(() => widget.selectedFilter = FilterType.pending);
-                      },
-                    ),
+                        label: const Text('Pendente'),
+                        selected: widget.selectedFilter == FilterType.pending,
+                        onSelected: (_) => widget.onFilterChanged(FilterType.pending),
+                      ),
                   ],
                 ),
               ),
@@ -91,12 +96,12 @@ class _HomepageSidepanelState extends State<HomepageSidepanel> {
               // Lista de caches
               Expanded(
                 child: ListView.builder(
-                  itemCount: filteredCaches.length,
+                  itemCount: widget.filteredCaches.length,
                   itemBuilder: (context, index) {
-                    return CacheListItem(
-                      cache: filteredCaches[index],
-                      isSelected: widget.selectedCacheIndex == index,
-                      onTap: () => widget.selectedCacheIndex = index,
+                    return ListTile(
+                      title: Text(widget.filteredCaches[index].name),
+                      selected: widget.selectedCacheIndex == index,
+                      onTap: () => widget.onCacheSelected(index),
                     );
                   },
                 ),
@@ -108,10 +113,12 @@ class _HomepageSidepanelState extends State<HomepageSidepanel> {
         Expanded(
           child: Container(
             color: Colors.white,
-            child: CacheDetailCard(cache: currentCache),
+            child: currentCache != null 
+              ? SingleChildScrollView(child: CacheDetailCard(cache: currentCache)) 
+              : const Center(child: Text("Selecione um cache")),
           ),
         ),
-      ],
-    ),
+      ]
+    );
   }
 }
