@@ -17,10 +17,6 @@ final GoRouter router = GoRouter(
     final naRotaDeLogin = state.matchedLocation == "/login";
     final naRotaDeCadastro = state.matchedLocation == "/register";
 
-    print(autenticado);
-    print(naRotaDeLogin);
-    print(naRotaDeCadastro);
-
     if (!autenticado && !naRotaDeLogin && !naRotaDeCadastro) {
       return '/login';
     }

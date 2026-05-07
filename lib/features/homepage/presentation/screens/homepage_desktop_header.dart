@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../router.dart';
+
 import 'package:projeto_integrador/features/homepage/presentation/screens/addcache_modal_screen.dart';
 
 class HomepageHeader extends StatefulWidget {
@@ -14,11 +16,9 @@ class _HomepageHeaderState extends State<HomepageHeader> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      
-      toolbarHeight: 80.0, // Defina a mesma altura aqui!
+      toolbarHeight: 80.0,
       backgroundColor: const Color.fromARGB(255, 2, 61, 138),
       elevation: 5,
-      // O 'title' agora contém o Logo + Textos
       title: Row(
         children: [
           Image.asset(
@@ -103,45 +103,3 @@ class _HomepageHeaderState extends State<HomepageHeader> {
     );
   }
 }
-
-      // color: Colors.blue[900],
-      // padding: const EdgeInsets.all(16),
-      // child: Column(
-      //   crossAxisAlignment: CrossAxisAlignment.start,
-      //   children: [
-      //     Row(
-      //       children: [
-      //         Icon(
-      //           Icons.location_on,
-      //           color: Colors.white,
-      //           size: 24,
-      //         ),
-      //         const SizedBox(width: 8),
-      //         Column(
-      //           crossAxisAlignment: CrossAxisAlignment.start,
-      //           children: [
-      //             const Text(
-      //               'GeoQuest Desktop',
-      //               style: TextStyle(
-      //                 color: Colors.white,
-      //                 fontSize: 16,
-      //                 fontWeight: FontWeight.w700,
-      //               ),
-      //             ),
-      //             Text(
-      //               'Encontre tesouros escondidos',
-      //               style: TextStyle(
-      //                 color: Colors.blue[100],
-      //                 fontSize: 12,
-      //               ),
-      //             ),
-      //           ],
-      //         ),
-      //       ],
-      //     ),
-      //     const SizedBox(height: 16),
-      //     Row(
-
-      //     ),
-      //   ],
-      // ),

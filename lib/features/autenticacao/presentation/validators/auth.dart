@@ -59,7 +59,9 @@ class AuthValidators {
         fieldName: 'A confirmação de senha',
       );
       if (requiredError != null) return requiredError;
+
       if (value != originalPassword) return 'As senhas não coincidem';
+
       return null;
     };
   }
