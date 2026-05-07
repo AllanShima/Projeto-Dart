@@ -45,8 +45,7 @@ class CacheDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header com mapa simulado
@@ -255,7 +254,6 @@ class CacheDetailCard extends StatelessWidget {
           ),
           const SizedBox(height: 24),
         ],
-      ),
-    );
+      );
   }
 }

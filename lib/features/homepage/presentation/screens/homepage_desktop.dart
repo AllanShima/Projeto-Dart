@@ -114,7 +114,7 @@ class _HomepageDesktopState extends State<HomepageDesktop> {
           child: Container(
             color: Colors.white,
             child: currentCache != null 
-              ? CacheDetailCard(cache: currentCache) 
+              ? SingleChildScrollView(child: CacheDetailCard(cache: currentCache)) 
               : const Center(child: Text("Selecione um cache")),
           ),
         ),
