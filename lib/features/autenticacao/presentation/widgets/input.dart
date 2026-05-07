@@ -14,7 +14,9 @@ class Input extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final largura = MediaQuery.of(context).size.width;
+    return 
+    Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -24,7 +26,7 @@ class Input extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 8),
+         SizedBox(height: largura > 600 ? 60 : 20),
         TextFormField(
           obscureText: isPassword,
           decoration: InputDecoration(

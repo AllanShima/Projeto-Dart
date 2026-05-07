@@ -7,15 +7,17 @@ class Layout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     final altura = MediaQuery.of(context).size.height;
     return Expanded(
-      flex: 2,
+      flex: 1,
       child: Container(
+        height: altura,
         decoration: const BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(40),
-            bottomLeft: Radius.circular(40),
-          ),
+          // borderRadius: BorderRadius.only(
+          //   topLeft: Radius.circular(40),
+          //   bottomLeft: Radius.circular(40),
+          // ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 60),
         child: child,

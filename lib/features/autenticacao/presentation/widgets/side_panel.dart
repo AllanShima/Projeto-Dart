@@ -7,32 +7,33 @@ class SidePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final largura = MediaQuery.of(context).size.width;
     return Expanded(
       flex: 1,
       child: Column(
         children: [
           const Spacer(),
-          Image.asset(logo, height: 120),
-          const SizedBox(height: 10),
-          const Text(
-            'GeoQuest Desktop',
+          Image.asset(logo, height: largura > 600 ? 120 : 40),
+          const SizedBox(height: 20),
+           Text(
+            'GeoQuest',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 36,
+              fontSize: largura > 600 ? 32 : 20,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Text(
+           Text(
             'Encontre tesouros escondidos',
-            style: TextStyle(color: Colors.white, fontSize: 18),
+            style: TextStyle(color: Colors.white, fontSize: largura > 600 ? 20 : 12),
           ),
           const Spacer(),
-          const Padding(
+           Padding(
             padding: EdgeInsets.only(bottom: 20),
             child: Text(
               'Por: Allan, Carlos, Hugo, Ryu, Renan e Emanuelly. Turma BCC-A 5º Termo',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 12),
+              style: TextStyle(color: Colors.white, fontSize: largura > 600 ? 12 : 6),
             ),
           ),
         ],
