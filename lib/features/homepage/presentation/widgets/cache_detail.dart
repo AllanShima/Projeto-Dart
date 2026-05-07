@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'star_rating.dart';
-import 'terrain_indicator.dart';
 import '../../domain/models/geocache.dart';
 
 /// Widget auxiliar para mostrar métrica

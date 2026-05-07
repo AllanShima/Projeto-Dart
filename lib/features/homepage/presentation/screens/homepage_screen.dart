@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+
 import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_header.dart';
 import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop.dart';
+
 import '../../domain/models/geocache.dart';
 
-// ============= SCREEN PRINCIPAL =============
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({super.key});
 
