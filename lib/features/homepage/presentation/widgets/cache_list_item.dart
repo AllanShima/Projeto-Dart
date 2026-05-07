@@ -12,8 +12,8 @@ class CacheListItem extends StatelessWidget {
     required this.cache,
     required this.onTap,
     this.isSelected = false,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

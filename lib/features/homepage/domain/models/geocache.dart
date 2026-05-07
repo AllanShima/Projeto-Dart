@@ -12,6 +12,8 @@ class GeoCache {
   final double latitude;
   final double longitude;
   final String? badge;
+  final int totalFound;
+  final String createdAt;
 
   GeoCache({
     required this.name,
@@ -25,6 +27,8 @@ class GeoCache {
     required this.tip,
     required this.latitude,
     required this.longitude,
+    required this.totalFound,
+    required this.createdAt,
     this.badge,
   });
 }

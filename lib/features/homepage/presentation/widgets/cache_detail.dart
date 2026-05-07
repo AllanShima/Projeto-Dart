@@ -4,10 +4,6 @@ import 'star_rating.dart';
 import 'terrain_indicator.dart';
 import '../../domain/models/geocache.dart';
 
-
-
-import 'package:flutter/material.dart';
-
 /// Widget auxiliar para mostrar métrica
 class _MetricCard extends StatelessWidget {
   final String label;
@@ -44,24 +40,24 @@ class CacheDetailCard extends StatelessWidget {
 
   const CacheDetailCard({
     required this.cache,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header com mapa simulado
           Container(
-            height: 200,
+            height: 300,
             width: double.infinity,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: const Color.fromARGB(255, 224, 224, 224),
               image: const DecorationImage(
-                image: AssetImage('assets/map_background.png'),
+                image: AssetImage('assets/images/geocache_background.jpg'),
                 fit: BoxFit.cover,
+                opacity: 0.3,
               ),
             ),
             child: Center(
@@ -147,14 +143,16 @@ class CacheDetailCard extends StatelessWidget {
               children: [
                 _MetricCard(
                   label: 'Dificuldade',
-                  child: StarRating(rating: cache.difficulty),
+                  child: Text('${(cache.difficulty).toString()}/5'),
+                  // StarRating(rating: cache.difficulty),
                 ),
                 _MetricCard(
                   label: 'Terreno',
-                  child: TerrainIndicator(
-                    level: cache.terrain,
-                    label: '',
-                  ),
+                  child: Text('${(cache.terrain).toString()}/5'),
+                  // TerrainIndicator(
+                  //   level: cache.terrain,
+                  //   label: '',
+                  // ),
                 ),
                 _MetricCard(
                   label: 'Distância',
@@ -208,7 +206,6 @@ class CacheDetailCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-
           // Dica
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -256,9 +253,102 @@ class CacheDetailCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          // Linha horizontal
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15.0, 20.0, 15.0, 20.0),
+            child: Container(
+                height: 1,
+                width: double.infinity,
+                color: Colors.grey,
+              ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Tamanho",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.4
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        cache.type,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
+                          height: 1.4,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Data de Criação",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.4
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        cache.createdAt,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
+                          height: 1.4,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Encontrado por",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          height: 1.4
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '${(cache.totalFound).toString()} pessoas',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[700],
+                          height: 1.4,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
         ],
-      ),
-    );
+      );
   }
 }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_header.dart';
+import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop.dart';
 import '../../domain/models/geocache.dart';
-import '../widgets/cache_detail.dart';
-import '../widgets/cache_list_item.dart';
 
 // ============= SCREEN PRINCIPAL =============
 class HomepageScreen extends StatefulWidget {
-  const HomepageScreen({Key? key}) : super(key: key);
+  const HomepageScreen({super.key});
 
   @override
   State<HomepageScreen> createState() => _HomepageScreenState();
@@ -32,6 +31,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       latitude: -23.5505,
       longitude: -46.6333,
       badge: 'traditional',
+      totalFound: 12,
+      createdAt: "12/05/2024"
     ),
     GeoCache(
       name: 'Trilha da Cachoeira',
@@ -45,6 +46,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Cuidado com pedras soltas na trilha',
       latitude: -23.4405,
       longitude: -46.6833,
+      totalFound: 122,
+      createdAt: "12/05/2023"
     ),
     GeoCache(
       name: 'Centro Histórico',
@@ -59,6 +62,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Leve uma moeda de 1 real',
       latitude: -23.5605,
       longitude: -46.6233,
+      totalFound: 14,
+      createdAt: "11/03/2022"
     ),
     GeoCache(
       name: 'Praça das Artes',
@@ -72,6 +77,8 @@ class _HomepageScreenState extends State<HomepageScreen> {
       tip: 'Próximo ao palco do lado direito',
       latitude: -23.5705,
       longitude: -46.6433,
+      totalFound: 20,
+      createdAt: "12/08/2025"
     ),
   ];
 
@@ -90,225 +97,44 @@ class _HomepageScreenState extends State<HomepageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentCache = filteredCaches.isNotEmpty
-        ? filteredCaches[
-            selectedCacheIndex.clamp(0, filteredCaches.length - 1)]
-        : caches[0];
+
+    // Pegamos a lista filtrada uma vez para usar no widget abaixo
+    final listaParaExibir = filteredCaches;
 
     return Scaffold(
+      appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(80.0),
+          child: const HomepageHeader(),
+        ),
       backgroundColor: Colors.grey[50],
-      body: Row(
+      body: Column(
         children: [
-          // Painel lateral com lista de caches
-          SizedBox(
-            width: 300,
-            child: Column(
-              children: [
-                // Header do painel
-                Container(
-                  color: Colors.blue[900],
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                          const SizedBox(width: 8),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'GeoQuest Desktop',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Text(
-                                'Encontre tesouros escondidos',
-                                style: TextStyle(
-                                  color: Colors.blue[100],
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.blue[800],
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.info_outline,
-                                    size: 16,
-                                    color: Colors.blue[100],
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '24 Encontrados',
-                                    style: TextStyle(
-                                      color: Colors.blue[50],
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.blue[800],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  size: 16,
-                                  color: Colors.blue[100],
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'Novo',
-                                  style: TextStyle(
-                                    color: Colors.blue[50],
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                // Search bar
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        searchQuery = value;
-                        selectedCacheIndex = 0;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Buscar Geocaches...',
-                      hintStyle: TextStyle(color: Colors.grey[400]),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                    ),
-                  ),
-                ),
-                // Filtros
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      FilterChip(
-                        label: const Text('Todos'),
-                        selected: selectedFilter == FilterType.all,
-                        onSelected: (bool selected) {
-                          setState(() => selectedFilter = FilterType.all);
-                        },
-                      ),
-                      FilterChip(
-                        label: const Text('Encontrados'),
-                        selected: selectedFilter == FilterType.found,
-                        onSelected: (bool selected) {
-                          setState(() => selectedFilter = FilterType.found);
-                        },
-                      ),
-                      FilterChip(
-                        label: const Text('Pendente'),
-                        selected: selectedFilter == FilterType.pending,
-                        onSelected: (bool selected) {
-                          setState(() => selectedFilter = FilterType.pending);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Lista de caches
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredCaches.length,
-                    itemBuilder: (context, index) {
-                      return CacheListItem(
-                        cache: filteredCaches[index],
-                        isSelected: selectedCacheIndex == index,
-                        onTap: () {
-                          setState(() => selectedCacheIndex = index);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // Painel direito com detalhes
           Expanded(
-            child: Container(
-              color: Colors.white,
-              child: CacheDetailCard(cache: currentCache),
+            child: HomepageDesktop(
+              selectedFilter: selectedFilter,
+              selectedCacheIndex: selectedCacheIndex,
+              searchQuery: searchQuery,
+              filteredCaches: listaParaExibir,
+            
+              onSearchChanged: (novoTexto) {
+                setState(() {
+                  searchQuery = novoTexto;
+                });
+              },
+              onFilterChanged: (novoFiltro) {
+                setState(() {
+                  selectedFilter = novoFiltro;
+                });
+              },
+              onCacheSelected: (novoIndex) {
+                setState(() {
+                  selectedCacheIndex = novoIndex;
+                });
+              },
             ),
-          ),
+          )
         ],
       ),
-    );
-  }
-}
-
-// ============= MAIN =============
-void main() {
-  runApp(const App());
-}
-
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GeoQuest',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const HomepageScreen(),
     );
   }
 }

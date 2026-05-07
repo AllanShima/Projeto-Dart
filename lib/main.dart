@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'features/autenticacao/presentation/screens/login_screen.dart';
+
+import 'router.dart';
 
 void main() {
   runApp(const App());
@@ -10,10 +11,10 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'GeoQuest',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const LoginScreen(),
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
     );
   }

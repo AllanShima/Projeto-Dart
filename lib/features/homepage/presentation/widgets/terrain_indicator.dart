@@ -8,8 +8,8 @@ class TerrainIndicator extends StatelessWidget {
   const TerrainIndicator({
     required this.level,
     required this.label,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -12,8 +12,8 @@ class FilterChip extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
     this.count,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
