@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
 
 import 'cache_list_tile_mobile.dart';
 
 class HomepageMobile extends StatelessWidget {
   final FilterType selectedFilter;
   final String searchQuery;
-  final List<GeoCache> filteredCaches;
+  final List<UserCacheProgress> filteredCaches;
   final Function(String) onSearchChanged;
   final Function(FilterType) onFilterChanged;
-  final Function(GeoCache) onCacheSelected;
+  final Function(UserCacheProgress) onCacheSelected;
 
   const HomepageMobile({
     super.key,
@@ -103,7 +104,7 @@ class HomepageMobile extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: CacheListTileMobile(
-                        cache: cache,
+                        cache: cache.cache,
                         onTap: () => onCacheSelected(cache),
                       ),
                     );

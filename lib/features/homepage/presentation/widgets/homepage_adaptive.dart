@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
+
+import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
 
 import 'homepage_mobile.dart';
 import 'homepage_desktop.dart';
@@ -8,78 +9,59 @@ import 'homepage_desktop.dart';
 import '../screens/cache_details_screen.dart';
 
 class HomepageAdaptive extends StatefulWidget {
-  final List<GeoCache> caches;
+  final List<UserCacheProgress> filteredCaches; // Corrigido: adicionado ';'
+  final FilterType selectedFilter;
+  final String searchQuery;
+  final ValueChanged<String> onSearchChanged;
+  final ValueChanged<FilterType> onFilterChanged;
 
-  const HomepageAdaptive({super.key, required this.caches});
+  const HomepageAdaptive({
+    super.key,
+    required this.filteredCaches,
+    required this.selectedFilter,
+    required this.searchQuery,
+    required this.onSearchChanged,
+    required this.onFilterChanged,
+  });
 
   @override
   State<HomepageAdaptive> createState() => _HomepageAdaptiveState();
 }
 
 class _HomepageAdaptiveState extends State<HomepageAdaptive> {
-  FilterType selectedFilter = FilterType.all;
+  // O index do cache selecionado faz sentido ficar aqui se for usado apenas no layout Desktop
   int selectedCacheIndex = 0;
-  String searchQuery = '';
-
-  List<GeoCache> get filteredCaches {
-    List<GeoCache> result = widget.caches;
-
-    if (searchQuery.isNotEmpty) {
-      result = result
-          .where(
-            (cache) =>
-                cache.name.toLowerCase().contains(searchQuery.toLowerCase()),
-          )
-          .toList();
-    }
-
-    return result;
-  }
 
   @override
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
-    final listaParaExibir = filteredCaches;
+    // Corrigido: Usando 'widget.' para acessar a propriedade do StatefulWidget
+    final listaParaExibir = widget.filteredCaches; 
 
     if (isMobile) {
       return HomepageMobile(
-        selectedFilter: selectedFilter,
-        searchQuery: searchQuery,
+        selectedFilter: widget.selectedFilter,
+        searchQuery: widget.searchQuery,
         filteredCaches: listaParaExibir,
-        onSearchChanged: (novoTexto) {
-          setState(() {
-            searchQuery = novoTexto;
-          });
-        },
-        onFilterChanged: (novoFiltro) {
-          setState(() {
-            selectedFilter = novoFiltro;
-          });
-        },
+        onSearchChanged: widget.onSearchChanged,
+        onFilterChanged: widget.onFilterChanged,
         onCacheSelected: (cache) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => CacheDetailScreen(cache: cache),
+              // Supondo que seu UserCacheProgress tenha o objeto de cache dentro:
+              builder: (context) => CacheDetailScreen(cache: cache.cache), 
             ),
           );
         },
       );
     } else {
       return HomepageDesktop(
-        selectedFilter: selectedFilter,
+        selectedFilter: widget.selectedFilter,
         selectedCacheIndex: selectedCacheIndex,
-        searchQuery: searchQuery,
+        searchQuery: widget.searchQuery,
         filteredCaches: listaParaExibir,
-        onSearchChanged: (novoTexto) {
-          setState(() {
-            searchQuery = novoTexto;
-          });
-        },
-        onFilterChanged: (novoFiltro) {
-          setState(() {
-            selectedFilter = novoFiltro;
-          });
-        },
+        onSearchChanged: widget.onSearchChanged,
+        onFilterChanged: widget.onFilterChanged,
         onCacheSelected: (novoIndex) {
           setState(() {
             selectedCacheIndex = novoIndex;
