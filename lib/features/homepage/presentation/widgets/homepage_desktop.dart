@@ -97,7 +97,7 @@ class _HomepageDesktopState extends State<HomepageDesktop> {
                   itemCount: widget.filteredCaches.length,
                   itemBuilder: (context, index) {
                     return CacheListItem(
-                      cache: widget.filteredCaches[index].cache,
+                      usercache: widget.filteredCaches[index],
                       isSelected: widget.selectedCacheIndex == index,
                       onTap: () => widget.onCacheSelected(index),
                     );
