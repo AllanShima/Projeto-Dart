@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_integrador/core/di/injection.dart';
+import 'package:projeto_integrador/providers/servico_autenticacao.dart';
 import 'package:provider/provider.dart';
 
 import 'router.dart';
@@ -16,15 +17,20 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-  providers: [
-    ChangeNotifierProvider(create: (_) => sl<AddCacheNotifier>()),
-  ],
-    child: MaterialApp.router(
-      title: 'GeoQuest',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      routerConfig: router,
-      debugShowCheckedModeBanner: false,
-    )
+      providers: [
+        ChangeNotifierProvider<AddCacheNotifier>(
+          create: (context) => AddCacheNotifier()
+        ),
+        ChangeNotifierProvider<ServicoAutenticacao>(
+          create: (context) => ServicoAutenticacao()
+        ),
+      ],
+      child: MaterialApp.router(
+        title: 'GeoQuest',
+        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
+        routerConfig: router,
+        debugShowCheckedModeBanner: false,
+      )
     );
   }
 }
