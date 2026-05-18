@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
 
 import 'package:projeto_integrador/features/homepage/presentation/widgets/cache_detail.dart';
 
@@ -10,7 +11,7 @@ class HomepageDesktop extends StatefulWidget {
   final FilterType selectedFilter;
   final int selectedCacheIndex;
   final String searchQuery;
-  final List<GeoCache> filteredCaches;
+  final List<UserCacheProgress> filteredCaches;
 
   // As ações (O que ele faz quando o usuário interage)
   final Function(String) onSearchChanged;
@@ -101,7 +102,7 @@ class _HomepageDesktopState extends State<HomepageDesktop> {
                   itemCount: widget.filteredCaches.length,
                   itemBuilder: (context, index) {
                     return CacheListItem(
-                      cache: widget.filteredCaches[index],
+                      usercache: widget.filteredCaches[index],
                       isSelected: widget.selectedCacheIndex == index,
                       onTap: () => widget.onCacheSelected(index),
                     );
@@ -116,7 +117,7 @@ class _HomepageDesktopState extends State<HomepageDesktop> {
           child: Container(
             color: Colors.white,
             child: currentCache != null 
-              ? SingleChildScrollView(child: CacheDetailCard(cache: currentCache)) 
+              ? SingleChildScrollView(child: CacheDetailCard(cache: currentCache.cache)) 
               : const Center(child: Text("Selecione um cache")),
           ),
         ),

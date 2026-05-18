@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
 import '../../domain/models/geocache.dart';
 import 'difficulty_badge.dart';
 
 /// Widget para item de cache na lista
 class CacheListItem extends StatelessWidget {
-  final GeoCache cache;
+  final UserCacheProgress usercache;
   final VoidCallback onTap;
   final bool isSelected;
 
   const CacheListItem({
-    required this.cache,
+    required this.usercache,
     required this.onTap,
     this.isSelected = false,
     super.key,
@@ -17,6 +18,7 @@ class CacheListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GeoCache cache = usercache.cache;
     return Container(
       decoration: BoxDecoration(
         color: isSelected ? Colors.blue[50] : Colors.white,
@@ -80,7 +82,7 @@ class CacheListItem extends StatelessWidget {
                         ],
                       ),
                     ),
-                    if (cache.badge != null)
+                    if (usercache.isFound == true)
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -97,7 +99,7 @@ class CacheListItem extends StatelessWidget {
                         ),
                       ),
                     const SizedBox(width: 5),
-                    if (cache.badge != null) // Mudar para = favorito != null do USUÁRIO logado
+                    if (usercache.isFavorited == true) // Mudar para = favorito != null do USUÁRIO logado
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
