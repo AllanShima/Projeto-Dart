@@ -19,9 +19,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // ChangeNotifierProvider<AddCacheNotifier>(
-        //   create: (context) => AddCacheNotifier()
-        // ),
+        ChangeNotifierProvider<AddCacheNotifier>(
+          create: (context) => AddCacheNotifier()
+        ),
         ChangeNotifierProvider<ServicoAutenticacao>(
           create: (context) => ServicoAutenticacao()
         ),
