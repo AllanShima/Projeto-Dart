@@ -71,7 +71,7 @@ class CacheListItem extends StatelessWidget {
                               ),
                               const SizedBox(width: 16),
                               Text(
-                                cache.favorites.toString(),
+                                '${cache.favorites.toString()} favorito(s)',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey[600],
