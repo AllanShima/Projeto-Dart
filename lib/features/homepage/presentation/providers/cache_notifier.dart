@@ -108,4 +108,47 @@ class CacheNotifier extends ChangeNotifier {
     _userCaches.add(newProgress);
     notifyListeners();
   }
+
+  /// Alterna o status de favorito de um cache específico
+  void toggleFavorite(String userId) {
+    // Procura o index do item correspondente pelo nome do cache
+    final index = _userCaches.indexWhere((c) => c.userId == userId);
+
+    if (index != -1) {
+      final currentProgress = _userCaches[index];
+      
+      // Se o seu modelo UserCacheProgress for imutável (usar final), 
+      // você deve usar um método copyWith. Caso contrário, altere direto:
+      _userCaches[index] = UserCacheProgress(
+        cache: currentProgress.cache,
+        userId: currentProgress.userId,
+        isFavorited: !currentProgress.isFavorited, // Inverte o valor atual
+        isFound: currentProgress.isFound,
+        foundAt: currentProgress.foundAt,
+      );
+
+      // Notifica a UI (Homepage) para redesenhar o ícone de coração
+      notifyListeners();
+    }
+  }
+
+  /// Alterna se o cache foi encontrado ou não
+  void toggleFound(String userId) {
+    final index = _userCaches.indexWhere((c) => c.userId == userId);
+
+    if (index != -1) {
+      final currentProgress = _userCaches[index];
+      final newIsFound = !currentProgress.isFound;
+
+      _userCaches[index] = UserCacheProgress(
+        cache: currentProgress.cache,
+        userId: currentProgress.userId,
+        isFavorited: currentProgress.isFavorited,
+        isFound: newIsFound,
+        foundAt: newIsFound ? DateTime.now() : null, // Salva o momento da descoberta
+      );
+
+      notifyListeners();
+    }
+  }
 }
