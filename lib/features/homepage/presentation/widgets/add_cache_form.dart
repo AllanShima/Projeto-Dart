@@ -64,7 +64,7 @@ class _AddCacheFormState extends State<AddCacheForm> {
         createdAt: "18/05/2026",
       );
 
-      // 2. Adiciona o novo cache na lista do estado global
+      
       context.read<CacheNotifier>().addNewCache(novoGeoCache);
 
       if (!mounted) return;

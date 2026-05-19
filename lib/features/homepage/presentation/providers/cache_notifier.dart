@@ -110,9 +110,9 @@ class CacheNotifier extends ChangeNotifier {
   }
 
   /// Alterna o status de favorito de um cache específico
-  void toggleFavorite(String userId) {
+  void toggleFavorite(String name) {
     // Procura o index do item correspondente pelo nome do cache
-    final index = _userCaches.indexWhere((c) => c.userId == userId);
+    final index = _userCaches.indexWhere((c) => c.cache.name == name);
 
     if (index != -1) {
       final currentProgress = _userCaches[index];

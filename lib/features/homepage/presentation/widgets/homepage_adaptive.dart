@@ -49,7 +49,7 @@ class _HomepageAdaptiveState extends State<HomepageAdaptive> {
           Navigator.of(context).push(
             MaterialPageRoute(
               // Supondo que seu UserCacheProgress tenha o objeto de cache dentro:
-              builder: (context) => CacheDetailScreen(cache: cache.cache), 
+              builder: (context) => CacheDetailScreen(usercache: cache), 
             ),
           );
         },

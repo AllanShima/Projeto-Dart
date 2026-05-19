@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
+import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../router.dart';
 
@@ -30,6 +33,15 @@ class _HomepageHeaderDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    context.watch<CacheNotifier>();
+
+    // Forma correta e reativa dentro do build:
+    List<UserCacheProgress> foundCaches = context.watch<CacheNotifier>()
+        .userCaches
+        .where((c) => c.isFound == true)
+        .toList(); // Importante converter o Iterable de volta para List
+
     return AppBar(
       toolbarHeight: 80.0,
       backgroundColor: const Color.fromARGB(255, 2, 61, 138),
@@ -79,7 +91,7 @@ class _HomepageHeaderDesktop extends StatelessWidget {
               Icon(Icons.info_outline, size: 16, color: Colors.blue[100]),
               const SizedBox(width: 8),
               Text(
-                '24 Encontrados',
+                '${foundCaches.length} Encontrado(s)',
                 style: TextStyle(color: Colors.blue[100], fontSize: 14),
               ),
             ],

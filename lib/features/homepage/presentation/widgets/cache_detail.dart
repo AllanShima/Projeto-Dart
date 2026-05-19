@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
+import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
+import 'package:provider/provider.dart';
 
 import '../../domain/models/geocache.dart';
 
@@ -34,15 +37,21 @@ class _MetricCard extends StatelessWidget {
 
 /// Widget para a card de informações detalhadas
 class CacheDetailCard extends StatelessWidget {
-  final GeoCache cache;
+  final UserCacheProgress usercache;
 
   const CacheDetailCard({
-    required this.cache,
+    required this.usercache,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    final GeoCache cache = usercache.cache;
+    bool isButtonEnabled = usercache.isFavorited;
+
+    context.watch<CacheNotifier>();
+
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -100,23 +109,34 @@ class CacheDetailCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 18,
-                      color: Colors.grey[600],
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.location_on,
+                          size: 18,
+                          color: Colors.grey[600],
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Tradicional · GC001',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Tradicional · GC001',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                      ),
-                    ),
+                    OutlinedButton(
+                      onPressed: () => {
+                        context.read<CacheNotifier>().toggleFavorite(usercache.cache.name)
+                      },
+                      child: Icon(Icons.favorite),
+                    )
                   ],
                 ),
                 const SizedBox(height: 8),
