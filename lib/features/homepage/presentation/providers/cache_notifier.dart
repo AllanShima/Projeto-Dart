@@ -133,8 +133,8 @@ class CacheNotifier extends ChangeNotifier {
   }
 
   /// Alterna se o cache foi encontrado ou não
-  void toggleFound(String userId) {
-    final index = _userCaches.indexWhere((c) => c.userId == userId);
+  void toggleFound(String name) {
+    final index = _userCaches.indexWhere((c) => c.cache.name == name);
 
     if (index != -1) {
       final currentProgress = _userCaches[index];

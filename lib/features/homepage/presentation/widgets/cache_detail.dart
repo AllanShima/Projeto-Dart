@@ -48,7 +48,8 @@ class CacheDetailCard extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final GeoCache cache = usercache.cache;
-    bool isButtonEnabled = usercache.isFavorited;
+
+    bool isFound = usercache.isFound;
 
     context.watch<CacheNotifier>();
 
@@ -135,7 +136,10 @@ class CacheDetailCard extends StatelessWidget {
                       onPressed: () => {
                         context.read<CacheNotifier>().toggleFavorite(usercache.cache.name)
                       },
-                      child: Icon(Icons.favorite),
+                      child: Icon(
+                        usercache.isFavorited ? Icons.favorite : Icons.favorite_border,
+                        color: usercache.isFavorited ? Colors.red : null, // Muda para vermelho se estiver favoritado
+                      ),
                     )
                   ],
                 ),
@@ -152,7 +156,25 @@ class CacheDetailCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 25),
+              child: FilledButton(
+                onPressed: !isFound 
+                  ? () => context.read<CacheNotifier>().toggleFound(usercache.cache.name)
+                  : null,
+                style: FilledButton.styleFrom(
+                    backgroundColor: Colors.blue, // Button background color
+                    foregroundColor: Colors.white, // Text and icon color
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                child: Text("Marcar como encontrado"),
+              ),
+            ),
+          ),
           // Métricas em grid
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),

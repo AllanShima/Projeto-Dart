@@ -139,6 +139,15 @@ class _HomepageHeaderMobile extends StatefulWidget {
 class _HomepageHeaderMobileState extends State<_HomepageHeaderMobile> {
   @override
   Widget build(BuildContext context) {
+
+    context.watch<CacheNotifier>();
+
+    // Forma correta e reativa dentro do build:
+    List<UserCacheProgress> foundCaches = context.watch<CacheNotifier>()
+        .userCaches
+        .where((c) => c.isFound == true)
+        .toList(); // Importante converter o Iterable de volta para List
+
     return AppBar(
       toolbarHeight: 60.0,
       backgroundColor: const Color.fromARGB(255, 2, 61, 138),
@@ -183,7 +192,7 @@ class _HomepageHeaderMobileState extends State<_HomepageHeaderMobile> {
                 Icon(Icons.check_circle, size: 14, color: Colors.blue[100]),
                 const SizedBox(width: 4),
                 Text(
-                  '24',
+                  '${foundCaches.length}',
                   style: TextStyle(
                     color: Colors.blue[50],
                     fontSize: 11,
