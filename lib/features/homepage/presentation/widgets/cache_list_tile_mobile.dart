@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
+import 'package:projeto_integrador/models/cachepoint.dart';
 
 class CacheListTileMobile extends StatelessWidget {
-  final GeoCache cache;
+  final CachePoint cache;
   final VoidCallback onTap;
 
   const CacheListTileMobile({
@@ -41,7 +41,7 @@ class CacheListTileMobile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          cache.name,
+                          cache.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -51,7 +51,7 @@ class CacheListTileMobile extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          cache.type,
+                          cache.dificultyLevel.label,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.grey[600],
@@ -68,16 +68,16 @@ class CacheListTileMobile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _MobileMetricBadge(
-                    icon: Icons.location_on,
-                    label: '${cache.distance}km',
+                    icon: Icons.terrain,
+                    label: cache.dificultyLevel.label,
                   ),
                   _MobileMetricBadge(
                     icon: Icons.star,
-                    label: '${cache.difficulty}/5',
+                    label: '${cache.dificultyLevel.index + 1}/5',
                   ),
                   _MobileMetricBadge(
-                    icon: Icons.favorite,
-                    label: '${cache.favorites}',
+                    icon: Icons.info_outline,
+                    label: cache.status.label,
                   ),
                 ],
               ),
@@ -92,7 +92,6 @@ class CacheListTileMobile extends StatelessWidget {
 class _MobileMetricBadge extends StatelessWidget {
   final IconData icon;
   final String label;
-
   const _MobileMetricBadge({required this.icon, required this.label});
 
   @override

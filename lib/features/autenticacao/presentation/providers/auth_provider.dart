@@ -1,61 +1,65 @@
 import 'package:flutter/material.dart';
 
-import '../../db/dao/user_dao.dart';
-import '../../models/user.dart';
+import 'package:projeto_integrador/models/user.dart';
 
-class ServicoAutenticacao extends ChangeNotifier {
-  ServicoAutenticacao(this._userDao);
+import 'package:projeto_integrador/db/dao/user_dao.dart';
+
+enum AuthStatus { initial, authenticated, unauthenticated }
+
+final class AuthProvider extends ChangeNotifier {
+  AuthProvider(this._userDao);
 
   final UserDao _userDao;
 
   User? _currentUser;
-  bool _autenticado = false;
-  String? _erro;
+  AuthStatus _status = AuthStatus.initial;
+  String? _error;
 
-  bool get autenticado => _autenticado;
   User? get currentUser => _currentUser;
-  String? get erro => _erro;
+  AuthStatus get status => _status;
+  String? get error => _error;
+  bool get isAuthenticated => _status == AuthStatus.authenticated;
 
   Future<bool> login(String email, String password) async {
-    _erro = null;
+    _error = null;
     try {
       final row = await _userDao.getByEmail(email);
       if (row == null) {
-        _erro = 'E-mail não encontrado';
+        _error = 'E-mail não encontrado';
         notifyListeners();
         return false;
       }
 
       if (row['password'] != password) {
-        _erro = 'Senha incorreta';
+        _error = 'Senha incorreta';
         notifyListeners();
         return false;
       }
 
       _currentUser = User.fromMap(row);
-      _autenticado = true;
+      _status = AuthStatus.authenticated;
       notifyListeners();
       return true;
     } catch (e) {
-      _erro = 'Erro ao fazer login: $e';
+      _error = 'Erro ao fazer login: $e';
       notifyListeners();
       return false;
     }
   }
 
-  Future<bool> register(String email, String password, String name) async {
-    _erro = null;
+  Future<bool> register(String email, String password) async {
+    _error = null;
     try {
       final existing = await _userDao.getByEmail(email);
       if (existing != null) {
-        _erro = 'E-mail já cadastrado';
+        _error = 'E-mail já cadastrado';
         notifyListeners();
         return false;
       }
 
       final user = User(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        name: name,
+        name: email.split('@').first, // nome provisório até ter campo no form
         email: email,
         createdAt: DateTime.now(),
       );
@@ -63,11 +67,11 @@ class ServicoAutenticacao extends ChangeNotifier {
       await _userDao.insert({...user.toMap(), 'password': password});
 
       _currentUser = user;
-      _autenticado = true;
+      _status = AuthStatus.authenticated;
       notifyListeners();
       return true;
     } catch (e) {
-      _erro = 'Erro ao cadastrar: $e';
+      _error = 'Erro ao cadastrar: $e';
       notifyListeners();
       return false;
     }
@@ -75,7 +79,7 @@ class ServicoAutenticacao extends ChangeNotifier {
 
   void logout() {
     _currentUser = null;
-    _autenticado = false;
+    _status = AuthStatus.unauthenticated;
     notifyListeners();
   }
 }

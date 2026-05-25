@@ -50,9 +50,7 @@ class CachePoint {
       qrCodeImageUrl: json['qr_code_image_url'] as String,
       creatorId: json['creator_id'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
-      status: CachePointStatus.fromString(
-        json['status'] as String? ?? 'ativo',
-      ),
+      status: CachePointStatus.fromString(json['status'] as String? ?? 'ativo'),
     );
   }
 
@@ -71,6 +69,34 @@ class CachePoint {
       'status': status.toJson(),
     };
   }
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'title': title,
+    'description': description,
+    'latitude': latitude,
+    'longitude': longitude,
+    'difficultyLevel': dificultyLevel.name,
+    'qrCodeContent': qrCodeContent,
+    'qrCodeImageUrl': qrCodeImageUrl,
+    'creatorId': creatorId,
+    'createdAt': createdAt.toIso8601String(),
+    'status': status.name,
+  };
+
+  factory CachePoint.fromMap(Map<String, dynamic> map) => CachePoint(
+    id: map['id'] as String,
+    title: map['title'] as String,
+    description: map['description'] as String,
+    latitude: (map['latitude'] as num).toDouble(),
+    longitude: (map['longitude'] as num).toDouble(),
+    dificultyLevel: DificultyLevel.fromString(map['difficultyLevel'] as String),
+    qrCodeContent: map['qrCodeContent'] as String,
+    qrCodeImageUrl: map['qrCodeImageUrl'] as String,
+    creatorId: map['creatorId'] as String,
+    createdAt: DateTime.parse(map['createdAt'] as String),
+    status: CachePointStatus.fromString(map['status'] as String),
+  );
 
   CachePoint copyWith({
     String? id,
@@ -102,28 +128,26 @@ class CachePoint {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-        other is CachePoint &&
-        other.id == id;
-
+      identical(this, other) || other is CachePoint && other.id == id;
 
   @override
   int get hashCode => Object.hash(
-        id,
-        title,
-        description,
-        latitude,
-        longitude,
-        dificultyLevel,
-        qrCodeContent,
-        qrCodeImageUrl,
-        creatorId,
-        createdAt,
-        status,
-      );
+    id,
+    title,
+    description,
+    latitude,
+    longitude,
+    dificultyLevel,
+    qrCodeContent,
+    qrCodeImageUrl,
+    creatorId,
+    createdAt,
+    status,
+  );
 
   @override
-  String toString() => 'CachePoint(id: $id, title: $title, '
+  String toString() =>
+      'CachePoint(id: $id, title: $title, '
       'latitude: $latitude, longitude: $longitude, '
       'difficulty: ${dificultyLevel.name}, status: ${status.name})';
 }

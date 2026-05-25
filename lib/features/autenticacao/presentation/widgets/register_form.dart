@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:projeto_integrador/providers/servico_autenticacao.dart';
 
 import '../validators/auth.dart';
 import 'auth_text_field.dart';
@@ -39,17 +42,21 @@ class _RegisterFormState extends State<RegisterForm> {
 
   Future<void> _submit() async {
     setState(() => _serverEmailError = null);
-
     if (!_formKey.currentState!.validate()) return;
-
     FocusScope.of(context).unfocus();
-
     setState(() => _isLoading = true);
 
     try {
-      await Future.delayed(const Duration(seconds: 2));
+      final auth = context.read<ServicoAutenticacao>();
+      final ok = await auth.register(
+        _emailController.text.trim(),
+        _passwordController.text,
+        _emailController.text.split('@').first, // nome provisório
+      );
 
-      if (mounted) {
+      if (!mounted) return;
+
+      if (ok) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Row(
@@ -67,27 +74,29 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
         );
-
         widget.onSuccess();
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error_outline, color: Colors.white),
-                const SizedBox(width: 12),
-                Expanded(child: Text('Erro ao cadastrar: $e')),
-              ],
+      } else {
+        if (auth.erro?.contains('E-mail') ?? false) {
+          setState(() => _serverEmailError = auth.erro);
+          _formKey.currentState!.validate();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(child: Text(auth.erro ?? 'Erro ao cadastrar')),
+                ],
+              ),
+              backgroundColor: Colors.red.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
-            backgroundColor: Colors.red.shade700,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        );
+          );
+        }
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_integrador/providers/servico_autenticacao.dart';
 import 'package:provider/provider.dart';
 
 import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
-import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
 import '../providers/add_cache_notifier.dart';
 import '../validators/cache.dart';
 
@@ -41,35 +41,28 @@ class _AddCacheFormState extends State<AddCacheForm> {
     super.dispose();
   }
 
-  void _submit(AddCacheNotifier formNotifier) {
+  Future<void> _submit(AddCacheNotifier formNotifier) async {
     if (!_formKey.currentState!.validate()) return;
-
     FocusScope.of(context).unfocus();
 
-    try {
-      final novoGeoCache = GeoCache(
-        name: _addressController.text, // Usando o endereço temporariamente como nome identificador
-        type: formNotifier.cacheType ?? 'Tradicional',
-        distance: 0.0,
-        difficulty: formNotifier.difficulty,
-        terrain: formNotifier.terrain,
-        duration: 'D: ${formNotifier.difficulty} / T: ${formNotifier.terrain}',
-        favorites: 0,
-        description: _descriptionController.text,
-        tip: formNotifier.hasHint ? _hintController.text : 'Sem dicas disponíveis.',
-        latitude: -23.5505,  // Valores mockados padrão enquanto não integra geolocalização por mapa
-        longitude: -46.6333,
-        badge: (formNotifier.cacheType ?? 'traditional').toLowerCase(),
-        totalFound: 0,
-        createdAt: "18/05/2026",
-      );
+    final auth = context.read<ServicoAutenticacao>();
 
-      
-      context.read<CacheNotifier>().addNewCache(novoGeoCache);
+    final ok = await formNotifier.submit(
+      title: _addressController.text,
+      description: _descriptionController.text,
+      latitude: -23.5505, // mockado até integrar mapa
+      longitude: -46.6333,
+      creatorId: auth.currentUser?.id ?? '',
+      tip: formNotifier.hasHint ? _hintController.text : null,
+    );
 
-      if (!mounted) return;
+    if (!mounted) return;
 
-      // 3. Exibe feedback de sucesso
+    if (ok) {
+      // Recarrega a lista após adicionar
+      final authUser = context.read<ServicoAutenticacao>().currentUser;
+      await context.read<CacheNotifier>().carregar(authUser?.id ?? '');
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Row(
@@ -82,13 +75,11 @@ class _AddCacheFormState extends State<AddCacheForm> {
           backgroundColor: Colors.green,
         ),
       );
-
-      // 4. Executa o callback para fechar a tela ou limpar o fluxo
       widget.onSuccess();
-    } catch (e) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Erro ao criar cache: $e'),
+        const SnackBar(
+          content: Text('Erro ao criar cache.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -132,21 +123,13 @@ class _AddCacheFormState extends State<AddCacheForm> {
             isSmallScreen,
           ),
           const SizedBox(height: 24),
-          _buildDropdownsSection(
-            notifier,
-            isSmallScreen,
-          ),
+          _buildDropdownsSection(notifier, isSmallScreen),
           const SizedBox(height: 24),
-          _buildRatingsSection(
-            notifier,
-            isSmallScreen,
-          ),
+          _buildRatingsSection(notifier, isSmallScreen),
           const SizedBox(height: 32),
           _SubmitButton(
             isLoading: notifier.isLoading,
-            onPressed: notifier.isLoading
-                ? null
-                : () => _submit(notifier),
+            onPressed: notifier.isLoading ? null : () => _submit(notifier),
           ),
         ],
       ),
@@ -154,7 +137,8 @@ class _AddCacheFormState extends State<AddCacheForm> {
   }
 
   Widget _buildDescriptionHintSection(
-    AddCacheNotifier notifier, // Tipo corrigido aqui de CacheNotifier para AddCacheNotifier
+    AddCacheNotifier
+    notifier, // Tipo corrigido aqui de CacheNotifier para AddCacheNotifier
     bool isSmallScreen,
   ) {
     final descriptionField = _DescriptionField(
@@ -179,11 +163,7 @@ class _AddCacheFormState extends State<AddCacheForm> {
 
     if (isSmallScreen) {
       return Column(
-        children: [
-          descriptionField,
-          const SizedBox(height: 24),
-          hintSection,
-        ],
+        children: [descriptionField, const SizedBox(height: 24), hintSection],
       );
     }
 
@@ -197,10 +177,7 @@ class _AddCacheFormState extends State<AddCacheForm> {
     );
   }
 
-  Widget _buildDropdownsSection(
-    AddCacheNotifier notifier,
-    bool isSmallScreen,
-  ) {
+  Widget _buildDropdownsSection(AddCacheNotifier notifier, bool isSmallScreen) {
     final cacheTypeDropdown = LabeledDropdown<String>(
       label: 'Tipo de Cache',
       items: _cacheTypes,
@@ -238,10 +215,7 @@ class _AddCacheFormState extends State<AddCacheForm> {
     );
   }
 
-  Widget _buildRatingsSection(
-    AddCacheNotifier notifier,
-    bool isSmallScreen,
-  ) {
+  Widget _buildRatingsSection(AddCacheNotifier notifier, bool isSmallScreen) {
     final difficultySelector = RatingSelector(
       label: 'Dificuldade',
       value: notifier.difficulty,
@@ -286,9 +260,7 @@ class _MapPlaceholder extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         color: Colors.grey.shade200,
       ),
-      child: const Center(
-        child: Icon(Icons.map, size: 48, color: Colors.grey),
-      ),
+      child: const Center(child: Icon(Icons.map, size: 48, color: Colors.grey)),
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
-import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
 
 import 'package:projeto_integrador/features/homepage/presentation/widgets/cache_detail.dart';
 import '../widgets/cache_list_item.dart';
