@@ -1,13 +1,12 @@
+// lib/features/homepage/presentation/screens/homepage_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
-
 import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
 import 'package:projeto_integrador/providers/servico_autenticacao.dart';
-
 import 'package:projeto_integrador/features/homepage/presentation/widgets/homepage_adaptive.dart';
-
 import 'package:projeto_integrador/features/homepage/presentation/screens/homepage_desktop_header.dart';
 
 class HomepageScreen extends StatefulWidget {
@@ -25,8 +24,13 @@ class _HomepageScreenState extends State<HomepageScreen> {
   @override
   void initState() {
     super.initState();
-    final auth = context.read<ServicoAutenticacao>();
-    context.read<CacheNotifier>().carregar(auth.currentUser?.id ?? '');
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final auth = context.read<ServicoAutenticacao>();
+      context.read<CacheNotifier>().carregar(
+        auth.currentUser?.id ?? '',
+        auth.token ?? '',
+      );
+    });
   }
 
   List<UserCacheProgress> get filteredCaches {
@@ -44,14 +48,11 @@ class _HomepageScreenState extends State<HomepageScreen> {
           .toList();
     }
 
-    switch (selectedFilter) {
-      case FilterType.found:
-        return result.where((c) => c.isFound == true).toList();
-      case FilterType.pending:
-        return result.where((c) => c.isFound == false).toList();
-      case FilterType.all:
-        return result;
-    }
+    return switch (selectedFilter) {
+      FilterType.found => result.where((c) => c.isFound).toList(),
+      FilterType.pending => result.where((c) => !c.isFound).toList(),
+      FilterType.all => result,
+    };
   }
 
   @override

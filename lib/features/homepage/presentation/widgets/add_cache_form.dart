@@ -48,20 +48,22 @@ class _AddCacheFormState extends State<AddCacheForm> {
     final auth = context.read<ServicoAutenticacao>();
 
     final ok = await formNotifier.submit(
+      token: auth.token ?? '',
       title: _addressController.text,
       description: _descriptionController.text,
-      latitude: -23.5505, // mockado até integrar mapa
+      latitude: -23.5505,
       longitude: -46.6333,
       creatorId: auth.currentUser?.id ?? '',
-      tip: formNotifier.hasHint ? _hintController.text : null,
     );
 
     if (!mounted) return;
 
-    if (ok) {
-      // Recarrega a lista após adicionar
-      final authUser = context.read<ServicoAutenticacao>().currentUser;
-      await context.read<CacheNotifier>().carregar(authUser?.id ?? '');
+    if (ok != null) {
+      // Passa userId e token para a assinatura atualizada do carregar()
+      await context.read<CacheNotifier>().carregar(
+        auth.currentUser?.id ?? '',
+        auth.token ?? '',
+      );
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -78,8 +80,8 @@ class _AddCacheFormState extends State<AddCacheForm> {
       widget.onSuccess();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Erro ao criar cache.'),
+        SnackBar(
+          content: Text(formNotifier.erro ?? 'Erro ao criar cache.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -118,10 +120,7 @@ class _AddCacheFormState extends State<AddCacheForm> {
           const SizedBox(height: 16),
           const _MapPlaceholder(),
           const SizedBox(height: 24),
-          _buildDescriptionHintSection(
-            notifier, // Corrigido para passar o AddCacheNotifier correto
-            isSmallScreen,
-          ),
+          _buildDescriptionHintSection(notifier, isSmallScreen),
           const SizedBox(height: 24),
           _buildDropdownsSection(notifier, isSmallScreen),
           const SizedBox(height: 24),
@@ -137,8 +136,7 @@ class _AddCacheFormState extends State<AddCacheForm> {
   }
 
   Widget _buildDescriptionHintSection(
-    AddCacheNotifier
-    notifier, // Tipo corrigido aqui de CacheNotifier para AddCacheNotifier
+    AddCacheNotifier notifier,
     bool isSmallScreen,
   ) {
     final descriptionField = _DescriptionField(

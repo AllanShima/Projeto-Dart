@@ -7,7 +7,7 @@ final class DatabaseHelper {
   DatabaseHelper._();
   static final DatabaseHelper instance = DatabaseHelper._();
 
-  static const _versao = 1;
+  static const _versao = 2;
   static const _nomeBanco = 'geoquest.db';
 
   Database? _db;
@@ -15,7 +15,6 @@ final class DatabaseHelper {
   Future<Database> get db async => _db ??= await _open();
 
   Future<Database> _open() async {
-    // Inicializa o ffi para desktop/testes — ignorado no mobile
     if (!kIsWeb &&
         (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
       sqfliteFfiInit();
@@ -34,8 +33,14 @@ final class DatabaseHelper {
           txn.execute(_sqlCachepoints),
           txn.execute(_sqlEvaluations),
           txn.execute(_sqlUserCacheProgress),
+          txn.execute(_sqlMeta),
         ]),
       ),
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute(_sqlMeta);
+        }
+      },
     );
   }
 
@@ -90,6 +95,13 @@ final class DatabaseHelper {
       FOREIGN KEY (userId) REFERENCES users (id) ON DELETE CASCADE,
       FOREIGN KEY (cachepointId) REFERENCES cachepoints (id) ON DELETE CASCADE,
       UNIQUE (userId, cachepointId)
+    )
+  ''';
+
+  static const _sqlMeta = '''
+    CREATE TABLE meta (
+      chave TEXT PRIMARY KEY,
+      valor TEXT NOT NULL
     )
   ''';
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:projeto_integrador/core/exceptions/app_exceptions.dart';
+import 'package:projeto_integrador/data/services/cache_service.dart';
 import 'package:projeto_integrador/db/dao/cachepoint_dao.dart';
 import 'package:projeto_integrador/models/cachepoint.dart';
-import 'package:projeto_integrador/models/enums.dart';
 
 class AddCacheNotifier extends ChangeNotifier {
-  AddCacheNotifier(this._dao);
+  AddCacheNotifier(this._dao, this._cacheService);
 
   final CachepointDao _dao;
+  final CacheService _cacheService;
 
   String? cacheType;
   String? cacheSize;
@@ -15,6 +17,7 @@ class AddCacheNotifier extends ChangeNotifier {
   int terrain = 1;
   bool hasHint = false;
   bool isLoading = false;
+  String? erro;
 
   void setCacheType(String? value) {
     cacheType = value;
@@ -41,7 +44,8 @@ class AddCacheNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> submit({
+  Future<CachePoint?> submit({
+    required String token,
     required String title,
     required String description,
     required double latitude,
@@ -50,28 +54,30 @@ class AddCacheNotifier extends ChangeNotifier {
     String? tip,
   }) async {
     isLoading = true;
+    erro = null;
     notifyListeners();
 
     try {
-      final cachepoint = CachePoint(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+      final cachepoint = await _cacheService.criarCache(
+        token: token,
         title: title,
         description: description,
         latitude: latitude,
         longitude: longitude,
-        dificultyLevel: DificultyLevel.fromString(
-          _difficultyToString(difficulty),
-        ),
-        qrCodeContent: DateTime.now().millisecondsSinceEpoch.toString(),
-        qrCodeImageUrl: '',
-        creatorId: creatorId,
-        createdAt: DateTime.now(),
+        difficultyLevel: _difficultyToString(difficulty),
+        tip: tip,
       );
 
       await _dao.insert(cachepoint.toMap());
-      return true;
+      await _dao.invalidarCache();
+
+      return cachepoint;
+    } on AppException catch (e) {
+      erro = e.mensagem;
+      return null;
     } catch (e) {
-      return false;
+      erro = 'Erro inesperado ao criar cache.';
+      return null;
     } finally {
       isLoading = false;
       notifyListeners();
@@ -79,15 +85,11 @@ class AddCacheNotifier extends ChangeNotifier {
   }
 
   String _difficultyToString(int value) {
-    switch (value) {
-      case 1:
-        return 'easy';
-      case 2:
-        return 'medium';
-      case 3:
-        return 'hard';
-      default:
-        return 'extreme';
-    }
+    return switch (value) {
+      1 => 'easy',
+      2 => 'medium',
+      3 => 'hard',
+      _ => 'extreme',
+    };
   }
 }

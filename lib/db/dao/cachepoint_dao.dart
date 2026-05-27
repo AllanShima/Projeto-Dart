@@ -10,7 +10,7 @@ final class CachepointDao {
     conflictAlgorithm: ConflictAlgorithm.fail,
   );
 
-  Future<Map<String, dynamic>?> getById(int id) async {
+  Future<Map<String, dynamic>?> getById(String id) async {
     final rows = await _db.query(
       'cachepoints',
       where: 'id = ?',
@@ -20,17 +20,17 @@ final class CachepointDao {
     return rows.isEmpty ? null : rows.first;
   }
 
-  Future<List<Map<String, dynamic>>> getByCreator(int creatorId) => _db.query(
-    'cachepoints',
-    where: 'creatorId = ?',
-    whereArgs: [creatorId],
-    orderBy: 'createdAt DESC',
-  );
+  Future<List<Map<String, dynamic>>> getByCreator(String creatorId) =>
+      _db.query(
+        'cachepoints',
+        where: 'creatorId = ?',
+        whereArgs: [creatorId],
+        orderBy: 'createdAt DESC',
+      );
 
   Future<List<Map<String, dynamic>>> getAll() =>
       _db.query('cachepoints', orderBy: 'createdAt DESC');
 
-  // Busca cachepoints dentro de um raio aproximado usando bounding box
   Future<List<Map<String, dynamic>>> getByBoundingBox({
     required double minLat,
     required double maxLat,
@@ -43,9 +43,46 @@ final class CachepointDao {
     orderBy: 'createdAt DESC',
   );
 
-  Future<int> update(int id, Map<String, dynamic> data) =>
+  Future<int> update(String id, Map<String, dynamic> data) =>
       _db.update('cachepoints', data, where: 'id = ?', whereArgs: [id]);
 
-  Future<int> delete(int id) =>
+  Future<int> delete(String id) =>
       _db.delete('cachepoints', where: 'id = ?', whereArgs: [id]);
+
+  static const _metaKey = 'cachepoints_ultima_atualizacao';
+  static const _ttl = Duration(minutes: 15);
+
+  Future<bool> cacheLocalValido() async {
+    final rows = await _db.query(
+      'meta',
+      where: 'chave = ?',
+      whereArgs: [_metaKey],
+    );
+    if (rows.isEmpty) return false;
+
+    final salvoEm = DateTime.tryParse(rows.first['valor'] as String? ?? '');
+    if (salvoEm == null) return false;
+    return DateTime.now().difference(salvoEm) < _ttl;
+  }
+
+  Future<void> salvarTodos(List<Map<String, dynamic>> cachepoints) async {
+    await _db.transaction((txn) async {
+      await txn.delete('cachepoints');
+      for (final cp in cachepoints) {
+        await txn.insert(
+          'cachepoints',
+          cp,
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+      await txn.insert('meta', {
+        'chave': _metaKey,
+        'valor': DateTime.now().toIso8601String(),
+      }, conflictAlgorithm: ConflictAlgorithm.replace);
+    });
+  }
+
+  Future<void> invalidarCache() async {
+    await _db.delete('meta', where: 'chave = ?', whereArgs: [_metaKey]);
+  }
 }

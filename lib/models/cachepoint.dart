@@ -50,7 +50,9 @@ class CachePoint {
       qrCodeImageUrl: json['qr_code_image_url'] as String,
       creatorId: json['creator_id'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
-      status: CachePointStatus.fromString(json['status'] as String? ?? 'ativo'),
+      status: CachePointStatus.fromString(
+        json['status'] as String? ?? 'active',
+      ),
     );
   }
 

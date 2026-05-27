@@ -23,9 +23,6 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<ServicoAutenticacao>.value(
           value: sl<ServicoAutenticacao>(),
         ),
-        ChangeNotifierProvider<AddCacheNotifier>.value(
-          value: sl<AddCacheNotifier>(),
-        ),
         ChangeNotifierProvider<CacheNotifier>.value(value: sl<CacheNotifier>()),
         ChangeNotifierProvider<AddCacheNotifier>.value(
           value: sl<AddCacheNotifier>(),
