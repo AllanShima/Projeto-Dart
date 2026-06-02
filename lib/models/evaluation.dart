@@ -39,6 +39,24 @@ class Evaluation {
     };
   }
 
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'userId': userId,
+    'cachepointId': cachePointId,
+    'grade': grade.value,
+    'comment': comment,
+    'createdAt': evaluatedAt.toIso8601String(),
+  };
+
+  factory Evaluation.fromMap(Map<String, dynamic> map) => Evaluation(
+    id: map['id'] as String,
+    userId: map['userId'] as String,
+    cachePointId: map['cachepointId'] as String,
+    grade: Grade.fromInt(map['grade'] as int),
+    comment: map['comment'] as String,
+    evaluatedAt: DateTime.parse(map['createdAt'] as String),
+  );
+
   Evaluation copyWith({
     String? id,
     String? userId,
@@ -60,21 +78,15 @@ class Evaluation {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is Evaluation &&
-        other.id == id;
+    return other is Evaluation && other.id == id;
   }
 
   @override
-  int get hashCode => Object.hash(
-        id,
-        userId,
-        cachePointId,
-        grade,
-        comment,
-        evaluatedAt,
-      );
+  int get hashCode =>
+      Object.hash(id, userId, cachePointId, grade, comment, evaluatedAt);
 
   @override
-  String toString() => 'Evaluation(id: $id, cachePointId: $cachePointId, '
+  String toString() =>
+      'Evaluation(id: $id, cachePointId: $cachePointId, '
       'grade: $grade, userId: $userId)';
 }

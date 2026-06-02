@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../domain/models/geocache.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
+import 'package:projeto_integrador/models/cachepoint.dart';
 import 'difficulty_badge.dart';
 
-/// Widget para item de cache na lista
 class CacheListItem extends StatelessWidget {
-  final GeoCache cache;
+  final UserCacheProgress usercache;
   final VoidCallback onTap;
   final bool isSelected;
 
   const CacheListItem({
-    required this.cache,
+    required this.usercache,
     required this.onTap,
     this.isSelected = false,
     super.key,
@@ -17,8 +17,9 @@ class CacheListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CachePoint cache = usercache.cache;
+
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: isSelected ? Colors.blue[50] : Colors.white,
         border: Border(
@@ -40,18 +41,14 @@ class CacheListItem extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 20,
-                      color: Colors.grey[700],
-                    ),
+                    Icon(Icons.location_on, size: 20, color: Colors.grey[700]),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            cache.name,
+                            cache.title,
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
@@ -59,29 +56,17 @@ class CacheListItem extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Text(
-                                '${cache.distance} km',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Text(
-                                cache.favorites.toString(),
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
+                          Text(
+                            cache.dificultyLevel.label,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    if (cache.badge != null)
+                    if (usercache.isFound)
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -89,9 +74,26 @@ class CacheListItem extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: Colors.blue,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        child: Icon(
+                        child: const Icon(
+                          Icons.star,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                    const SizedBox(width: 5),
+                    if (usercache.isFavorited)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: const Icon(
                           Icons.favorite,
                           size: 16,
                           color: Colors.white,
@@ -103,13 +105,14 @@ class CacheListItem extends StatelessWidget {
                 Row(
                   children: [
                     DifficultyBadge(
-                      level: cache.difficulty,
-                      label: 'D: ${cache.difficulty} / T: ${cache.terrain}',
+                      level: cache.dificultyLevel.index + 1,
+                      label:
+                          'D: ${cache.dificultyLevel.index + 1} / ${cache.status.label}',
                     ),
                     const SizedBox(width: 8),
                     DifficultyBadge(
                       level: 1,
-                      label: cache.duration,
+                      label: cache.dificultyLevel.label,
                     ),
                   ],
                 ),

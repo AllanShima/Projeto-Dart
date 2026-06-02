@@ -29,6 +29,20 @@ class User {
     };
   }
 
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'email': email,
+    'createdAt': createdAt.toIso8601String(),
+  };
+
+  factory User.fromMap(Map<String, dynamic> map) => User(
+    id: map['id'] as String,
+    name: map['name'] as String,
+    email: map['email'] as String,
+    createdAt: DateTime.parse(map['createdAt'] as String),
+  );
+
   User copyWith({
     String? id,
     String? name,
@@ -45,10 +59,8 @@ class User {
 
   @override
   bool operator ==(Object other) =>
-    identical(this, other) ||
-        other is User &&
-        other.id == id;
-  
+      identical(this, other) || other is User && other.id == id;
+
   @override
   int get hashCode => Object.hash(id, name, email, createdAt);
 
