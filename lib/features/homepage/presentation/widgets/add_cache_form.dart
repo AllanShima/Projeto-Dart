@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_integrador/models/enums.dart';
 import 'package:projeto_integrador/providers/servico_autenticacao.dart';
 import 'package:provider/provider.dart';
 
@@ -217,7 +218,17 @@ class _AddCacheFormState extends State<AddCacheForm> {
     final difficultySelector = RatingSelector(
       label: 'Dificuldade',
       value: notifier.difficulty,
-      onChanged: notifier.setDifficulty,
+      onChanged: (int value) {
+        final difficultyLevels = [
+          DificultyLevel.easy,
+          DificultyLevel.medium,
+          DificultyLevel.hard,
+          DificultyLevel.extreme,
+        ];
+        if (value > 0 && value <= difficultyLevels.length) {
+          notifier.setDifficulty(difficultyLevels[value - 1]);
+        }
+      },
     );
 
     final terrainSelector = RatingSelector(
