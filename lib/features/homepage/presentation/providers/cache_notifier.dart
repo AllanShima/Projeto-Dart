@@ -1,154 +1,173 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
-import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
+
+import 'package:projeto_integrador/core/exceptions/app_exceptions.dart';
+import 'package:projeto_integrador/data/services/cache_service.dart';
+import 'package:projeto_integrador/data/services/progress_service.dart';
+import 'package:projeto_integrador/db/dao/cachepoint_dao.dart';
+import 'package:projeto_integrador/db/dao/user_cache_progress_dao.dart';
+import 'package:projeto_integrador/models/cachepoint.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
 
 class CacheNotifier extends ChangeNotifier {
-  // Transferimos a lista mockada para cá
-  final List<UserCacheProgress> _userCaches = [
-    UserCacheProgress(
-      cache: GeoCache(
-        name: 'Parque da Cidade - Vista Panorâmica',
-        type: 'Tradicional',
-        distance: 1.2,
-        difficulty: 2,
-        terrain: 2,
-        duration: 'D: 2 / T: 1.5',
-        favorites: 42,
-        description: 'Cache localizado próximo ao mirante com vista incrível da cidade. Leve itens para trocar',
-        tip: 'Próximo ao banco de pedra!',
-        latitude: -23.5505,
-        longitude: -46.6333,
-        badge: 'traditional',
-        totalFound: 12,
-        createdAt: "12/05/2024",
-    ),
-      userId: "teste",
-      isFavorited: true,
-      isFound: true,
-      foundAt: DateTime.now()
-    ),
+  CacheNotifier(
+    this._cachepointDao,
+    this._progressDao,
+    this._cacheService,
+    this._progressService,
+  );
 
-    UserCacheProgress(
-      cache: GeoCache(
-        name: 'Trilha da Cachoeira',
-        type: 'Pequeno',
-        distance: 3.8,
-        difficulty: 3,
-        terrain: 4,
-        duration: 'D: 3.5 / T: 4',
-        favorites: 89,
-        description: 'Cache escondido em trilha de dificuldade média com bela paisagem',
-        tip: 'Cuidado com pedras soltas na trilha',
-        latitude: -23.4405,
-        longitude: -46.6833,
-        totalFound: 122,
-        createdAt: "12/05/2023",
-      ),
-      userId: "teste",
-      isFavorited: true,
-      isFound: true,
-      foundAt: DateTime.now()
-    ),
+  final CachepointDao _cachepointDao;
+  final UserCacheProgressDao _progressDao;
+  final CacheService _cacheService;
+  final ProgressService _progressService;
 
-    UserCacheProgress(
-      cache: GeoCache(
-        name: 'Centro Histórico',
-        type: 'Micro',
-        distance: 0.8,
-        difficulty: 3,
-        terrain: 2,
-        duration: 'D: 3 / T: 2',
-        favorites: 67,
-        description: 'Cache em área histórica da cidade, perfeito para explorar as ruas antigas',
-        tip: 'Leve uma moeda de 1 real',
-        latitude: -23.5605,
-        longitude: -46.6233,
-        totalFound: 14,
-        createdAt: "11/03/2022",
-      ),
-      userId: "teste",
-      isFavorited: false,
-      isFound: false,
-      foundAt: DateTime.now()
-    ),
-    
-    UserCacheProgress(
-      cache: GeoCache(
-        name: 'Praça das Artes',
-        type: 'Pequeno',
-        distance: 2.1,
-        difficulty: 1,
-        terrain: 1,
-        duration: 'D: 1.5 / T: 1',
-        favorites: 31,
-        description: 'Cache fácil em praça com vida cultural intensa',
-        tip: 'Próximo ao palco do lado direito',
-        latitude: -23.5705,
-        longitude: -46.6433,
-        totalFound: 20,
-        createdAt: "12/08/2025",
-      ),
-      userId: "teste",
-      isFavorited: false,
-      isFound: false,
-      foundAt: DateTime.now()
-    )
-  ];
-  
+  List<UserCacheProgress> _userCaches = [];
+  bool isLoading = false;
+  String? erro;
+  String _userId = '';
+  String _token = '';
+
   List<UserCacheProgress> get userCaches => _userCaches;
 
-  void addNewCache(GeoCache newGeoCache) {
-    final newProgress = UserCacheProgress(
-      cache: newGeoCache,
-      userId: "teste",
-      isFavorited: false,
-      isFound: false,
+  Future<void> carregar(
+    String userId,
+    String token, {
+    double? lat,
+    double? lng,
+    double raioKm = 10,
+  }) async {
+    _userId = userId;
+    _token = token;
+    isLoading = true;
+    erro = null;
+    notifyListeners();
+
+    try {
+      List<Map<String, dynamic>> cachepointRows;
+
+      if (await _cachepointDao.cacheLocalValido()) {
+        cachepointRows = await _cachepointDao.getAll();
+      } else {
+        final remotos = await _cacheService.listarCaches(
+          token: _token,
+          lat: lat,
+          lng: lng,
+          raioKm: raioKm,
+        );
+        await _cachepointDao.salvarTodos(
+          remotos.map((cp) => cp.toMap()).toList(),
+        );
+        cachepointRows = remotos.map((cp) => cp.toMap()).toList();
+      }
+
+      try {
+        final remotos = await _progressService.listarProgresso(
+          token: _token,
+          userId: _userId,
+        );
+        await _progressDao.salvarTodos(
+          remotos.map((p) => p.toMap()).toList(),
+          _userId,
+        );
+      } on NetworkException {
+        // sem conexão: usa o que está no SQLite
+      }
+
+      final progressRows = await _progressDao.getByUser(userId);
+      final progressMap = {
+        for (final row in progressRows) row['cachepointId'] as String: row,
+      };
+
+      _userCaches = cachepointRows.map((row) {
+        final cachepoint = CachePoint.fromMap(row);
+        final progress = progressMap[cachepoint.id];
+        return UserCacheProgress(
+          cache: cachepoint,
+          userId: userId,
+          isFavorited: progress?['isFavorited'] == 1,
+          isFound: progress?['isFound'] == 1,
+          foundAt: progress?['foundAt'] != null
+              ? DateTime.parse(progress!['foundAt'] as String)
+              : null,
+        );
+      }).toList();
+    } on AppException catch (e) {
+      erro = e.mensagem;
+    } catch (e) {
+      erro = 'Erro ao carregar caches: $e';
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> toggleFavorite(String cachepointId) async {
+    final index = _userCaches.indexWhere((c) => c.cache.id == cachepointId);
+    if (index == -1) return;
+
+    final updated = _userCaches[index].copyWith(
+      isFavorited: !_userCaches[index].isFavorited,
+    );
+    _userCaches[index] = updated;
+    notifyListeners();
+
+    await _progressDao.upsert(
+      userId: _userId,
+      cachepointId: cachepointId,
+      isFavorited: updated.isFavorited,
+      isFound: updated.isFound,
+      foundAt: updated.foundAt,
     );
 
-    _userCaches.add(newProgress);
+    try {
+      await _progressService.atualizarFavorito(
+        token: _token,
+        userId: _userId,
+        cachepointId: cachepointId,
+        isFavorited: updated.isFavorited,
+      );
+    } on AppException {
+      // falha de rede ou API: dado já está salvo localmente
+    }
+  }
+
+  Future<void> toggleFound(String cachepointId) async {
+    final index = _userCaches.indexWhere((c) => c.cache.id == cachepointId);
+    if (index == -1) return;
+
+    final newIsFound = !_userCaches[index].isFound;
+    final updated = _userCaches[index].copyWith(
+      isFound: newIsFound,
+      foundAt: newIsFound ? DateTime.now() : null,
+    );
+    _userCaches[index] = updated;
     notifyListeners();
-  }
 
-  /// Alterna o status de favorito de um cache específico
-  void toggleFavorite(String name) {
-    // Procura o index do item correspondente pelo nome do cache
-    final index = _userCaches.indexWhere((c) => c.cache.name == name);
+    await _progressDao.upsert(
+      userId: _userId,
+      cachepointId: cachepointId,
+      isFavorited: updated.isFavorited,
+      isFound: updated.isFound,
+      foundAt: updated.foundAt,
+    );
 
-    if (index != -1) {
-      final currentProgress = _userCaches[index];
-      
-      // Se o seu modelo UserCacheProgress for imutável (usar final), 
-      // você deve usar um método copyWith. Caso contrário, altere direto:
-      _userCaches[index] = UserCacheProgress(
-        cache: currentProgress.cache,
-        userId: currentProgress.userId,
-        isFavorited: !currentProgress.isFavorited, // Inverte o valor atual
-        isFound: currentProgress.isFound,
-        foundAt: currentProgress.foundAt,
-      );
-
-      // Notifica a UI (Homepage) para redesenhar o ícone de coração
-      notifyListeners();
+    if (newIsFound) {
+      try {
+        await _progressService.registrarCheckin(
+          token: _token,
+          cachepointId: cachepointId,
+          qrCodeContent: updated.cache.qrCodeContent,
+        );
+      } on AppException {
+        // falha silenciosa: checkin local já registrado
+      }
     }
   }
 
-  /// Alterna se o cache foi encontrado ou não
-  void toggleFound(String name) {
-    final index = _userCaches.indexWhere((c) => c.cache.name == name);
-
-    if (index != -1) {
-      final currentProgress = _userCaches[index];
-      final newIsFound = !currentProgress.isFound;
-
-      _userCaches[index] = UserCacheProgress(
-        cache: currentProgress.cache,
-        userId: currentProgress.userId,
-        isFavorited: currentProgress.isFavorited,
-        isFound: newIsFound,
-        foundAt: newIsFound ? DateTime.now() : null, // Salva o momento da descoberta
-      );
-
-      notifyListeners();
-    }
+  Future<void> addNewCache(CachePoint cachepoint) async {
+    await _cachepointDao.insert(cachepoint.toMap());
+    await _cachepointDao.invalidarCache();
+    _userCaches.add(UserCacheProgress(cache: cachepoint, userId: _userId));
+    notifyListeners();
   }
 }

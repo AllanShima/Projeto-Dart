@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
 import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
+import 'package:projeto_integrador/providers/servico_autenticacao.dart';
 import 'package:provider/provider.dart';
-
-import '../../../../router.dart';
 
 import 'package:projeto_integrador/features/homepage/presentation/screens/addcache_modal_screen.dart';
 
@@ -33,11 +32,11 @@ class _HomepageHeaderDesktop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     context.watch<CacheNotifier>();
 
     // Forma correta e reativa dentro do build:
-    List<UserCacheProgress> foundCaches = context.watch<CacheNotifier>()
+    List<UserCacheProgress> foundCaches = context
+        .watch<CacheNotifier>()
         .userCaches
         .where((c) => c.isFound == true)
         .toList(); // Importante converter o Iterable de volta para List
@@ -120,7 +119,10 @@ class _HomepageHeaderDesktop extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         IconButton(
-          onPressed: () => {servicoAuth.logout(), context.go('/login')},
+          onPressed: () {
+            context.read<ServicoAutenticacao>().logout();
+            context.go('/login');
+          },
           icon: const Icon(Icons.exit_to_app, color: Colors.white),
         ),
         const SizedBox(width: 8),
@@ -139,11 +141,11 @@ class _HomepageHeaderMobile extends StatefulWidget {
 class _HomepageHeaderMobileState extends State<_HomepageHeaderMobile> {
   @override
   Widget build(BuildContext context) {
-
     context.watch<CacheNotifier>();
 
     // Forma correta e reativa dentro do build:
-    List<UserCacheProgress> foundCaches = context.watch<CacheNotifier>()
+    List<UserCacheProgress> foundCaches = context
+        .watch<CacheNotifier>()
         .userCaches
         .where((c) => c.isFound == true)
         .toList(); // Importante converter o Iterable de volta para List
@@ -221,7 +223,7 @@ class _HomepageHeaderMobileState extends State<_HomepageHeaderMobile> {
           message: 'Sair',
           child: IconButton(
             onPressed: () {
-              servicoAuth.logout();
+              context.read<ServicoAutenticacao>().logout();
               context.go('/login');
             },
             icon: const Icon(Icons.exit_to_app, color: Colors.white),

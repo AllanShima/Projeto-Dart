@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_integrador/features/homepage/domain/models/geocache.dart';
 
-import 'package:projeto_integrador/features/homepage/domain/models/usercache.dart';
+import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
 
 import 'homepage_mobile.dart';
 import 'homepage_desktop.dart';
@@ -9,7 +8,7 @@ import 'homepage_desktop.dart';
 import '../screens/cache_details_screen.dart';
 
 class HomepageAdaptive extends StatefulWidget {
-  final List<UserCacheProgress> filteredCaches; // Corrigido: adicionado ';'
+  final List<UserCacheProgress> filteredCaches;
   final FilterType selectedFilter;
   final String searchQuery;
   final ValueChanged<String> onSearchChanged;
@@ -36,7 +35,7 @@ class _HomepageAdaptiveState extends State<HomepageAdaptive> {
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 768;
     // Corrigido: Usando 'widget.' para acessar a propriedade do StatefulWidget
-    final listaParaExibir = widget.filteredCaches; 
+    final listaParaExibir = widget.filteredCaches;
 
     if (isMobile) {
       return HomepageMobile(
@@ -49,7 +48,7 @@ class _HomepageAdaptiveState extends State<HomepageAdaptive> {
           Navigator.of(context).push(
             MaterialPageRoute(
               // Supondo que seu UserCacheProgress tenha o objeto de cache dentro:
-              builder: (context) => CacheDetailScreen(usercache: cache), 
+              builder: (context) => CacheDetailScreen(usercache: cache),
             ),
           );
         },

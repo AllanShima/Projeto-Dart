@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_integrador/core/di/injection.dart';
-import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
-import 'package:projeto_integrador/providers/servico_autenticacao.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'router.dart';
+import 'core/di/injection.dart';
+import 'providers/servico_autenticacao.dart';
 import 'features/homepage/presentation/providers/add_cache_notifier.dart';
+import 'features/homepage/presentation/providers/cache_notifier.dart';
 
-void main() async{
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await setupServiceLocator();
   runApp(const App());
 }
@@ -19,23 +20,22 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<AddCacheNotifier>(
-          create: (context) => AddCacheNotifier()
+        ChangeNotifierProvider<ServicoAutenticacao>.value(
+          value: sl<ServicoAutenticacao>(),
         ),
-        ChangeNotifierProvider<ServicoAutenticacao>(
-          create: (context) => ServicoAutenticacao()
+        ChangeNotifierProvider<CacheNotifier>.value(value: sl<CacheNotifier>()),
+        ChangeNotifierProvider<AddCacheNotifier>.value(
+          value: sl<AddCacheNotifier>(),
         ),
-        ChangeNotifierProvider<CacheNotifier>(
-          create: (context) => CacheNotifier()
-        )
       ],
       child: MaterialApp.router(
         title: 'GeoQuest',
-        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-        routerConfig: router,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        ),
+        routerConfig: sl<GoRouter>(),
         debugShowCheckedModeBanner: false,
-      )
+      ),
     );
   }
 }
-
