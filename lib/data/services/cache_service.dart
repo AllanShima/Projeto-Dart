@@ -20,6 +20,7 @@ List<CachePoint> cacheList = [
     creatorId: "user_01",
     createdAt: DateTime.now(),
     status: CachePointStatus.active,
+    tip: "Olhe entre as raízes principais.",
   ),
   CachePoint(
     id: "abc12345",
@@ -33,6 +34,7 @@ List<CachePoint> cacheList = [
     creatorId: "user_02",
     createdAt: DateTime.now(),
     status: CachePointStatus.active,
+    tip: "Não é necessário escalar a rocha.",
   ),
   CachePoint(
     id: "xyz98765",
@@ -59,6 +61,7 @@ List<CachePoint> cacheList = [
     creatorId: "user_03",
     createdAt: DateTime.now(),
     status: CachePointStatus.active,
+    tip: "Lado esquerdo da placa de bronze.",
   ),
   CachePoint(
     id: "rty11223",
@@ -89,10 +92,7 @@ List<CachePoint> cacheList = [
 ];
 
 class CacheService {
-
-  // const CacheService(this._client);
-
-  // final http.Client _client;
+  CacheService(); // Constructor matches setupServiceLocator invocation completely
 
   // GET /caches
   Future<List<CachePoint>> listarCaches({
@@ -177,6 +177,7 @@ class CacheService {
       creatorId: "user_logged",
       createdAt: DateTime.now(),
       status: CachePointStatus.active,
+      tip: tip, // Added property mapping assignment
     );
     cacheList.add(novoCache);
     return novoCache;
@@ -210,8 +211,7 @@ class CacheService {
     final index = cacheList.indexWhere((cache) => cache.id == id);
     if (index != -1) {
       final cacheAtual = cacheList[index];
-      final cacheAtualizado = 
-      CachePoint(
+      final cacheAtualizado = CachePoint(
         id: cacheAtual.id,
         title: title ?? cacheAtual.title,
         description: description ?? cacheAtual.description,
@@ -223,6 +223,7 @@ class CacheService {
         creatorId: cacheAtual.creatorId,
         createdAt: cacheAtual.createdAt,
         status: status ?? cacheAtual.status,
+        tip: cacheAtual.tip, // Maintained field integrity during updates
       );
       cacheList[index] = cacheAtualizado;
       return cacheAtualizado;

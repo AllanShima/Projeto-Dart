@@ -13,6 +13,7 @@ class CachePoint {
     required this.creatorId,
     required this.createdAt,
     this.status = CachePointStatus.active,
+    this.tip, // Added optional field
   });
 
   final String id;
@@ -31,6 +32,7 @@ class CachePoint {
   final String creatorId;
   final DateTime createdAt;
   final CachePointStatus status;
+  final String? tip; // Added property definition
 
   // ---------------------------------------------------------------------------
   // Desserialização
@@ -53,6 +55,7 @@ class CachePoint {
       status: CachePointStatus.fromString(
         json['status'] as String? ?? 'active',
       ),
+      tip: json['tip'] as String?, // Mapped from Json
     );
   }
 
@@ -69,6 +72,7 @@ class CachePoint {
       'creator_id': creatorId,
       'created_at': createdAt.toIso8601String(),
       'status': status.toJson(),
+      'tip': tip, // Included in Json output
     };
   }
 
@@ -84,6 +88,7 @@ class CachePoint {
     'creatorId': creatorId,
     'createdAt': createdAt.toIso8601String(),
     'status': status.name,
+    'tip': tip, // Included in SQLite Map format
   };
 
   factory CachePoint.fromMap(Map<String, dynamic> map) => CachePoint(
@@ -98,6 +103,7 @@ class CachePoint {
     creatorId: map['creatorId'] as String,
     createdAt: DateTime.parse(map['createdAt'] as String),
     status: CachePointStatus.fromString(map['status'] as String),
+    tip: map['tip'] as String?, // Mapped from local DB Map
   );
 
   CachePoint copyWith({
@@ -112,6 +118,7 @@ class CachePoint {
     String? creatorId,
     DateTime? createdAt,
     CachePointStatus? status,
+    String? tip, // Enabled flexibility inside copyWith
   }) {
     return CachePoint(
       id: id ?? this.id,
@@ -125,6 +132,7 @@ class CachePoint {
       creatorId: creatorId ?? this.creatorId,
       createdAt: createdAt ?? this.createdAt,
       status: status ?? this.status,
+      tip: tip ?? this.tip,
     );
   }
 
@@ -145,11 +153,12 @@ class CachePoint {
     creatorId,
     createdAt,
     status,
+    tip, // Updated hash
   );
 
   @override
   String toString() =>
       'CachePoint(id: $id, title: $title, '
       'latitude: $latitude, longitude: $longitude, '
-      'difficulty: ${dificultyLevel.name}, status: ${status.name})';
+      'difficulty: ${dificultyLevel.name}, status: ${status.name}, tip: $tip)';
 }

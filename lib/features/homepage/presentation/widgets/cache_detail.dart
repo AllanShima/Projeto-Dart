@@ -209,7 +209,8 @@ class CacheDetailCard extends StatelessWidget {
         const SizedBox(height: 16),
 
         // QR Code content
-        Padding(
+        if (cache.tip != null)
+          Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Container(
             padding: const EdgeInsets.all(12),
@@ -223,10 +224,10 @@ class CacheDetailCard extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.qr_code, size: 18, color: Colors.yellow[800]),
+                    Icon(Icons.map, size: 18, color: Colors.yellow[800]),
                     const SizedBox(width: 8),
                     Text(
-                      'QR Code',
+                      'Dica',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
@@ -237,7 +238,7 @@ class CacheDetailCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  cache.qrCodeContent,
+                  cache.tip!,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.yellow[900],
