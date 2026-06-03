@@ -7,9 +7,9 @@ import 'package:projeto_integrador/models/cachepoint.dart';
 import 'package:projeto_integrador/models/enums.dart';
 
 class AddCacheNotifier extends ChangeNotifier {
-  AddCacheNotifier(this._dao, this._cacheService);
+  AddCacheNotifier(this._cacheService);
 
-  final CachepointDao _dao;
+  // final CachepointDao _dao;
   final CacheService _cacheService;
 
   String? cacheType;
@@ -82,8 +82,10 @@ class AddCacheNotifier extends ChangeNotifier {
         tip: tip,
       );
 
+      /*
       await _dao.insert(cachepoint.toMap());
       await _dao.invalidarCache();
+      */
 
       return cachepoint;
     } on AppException catch (e) {

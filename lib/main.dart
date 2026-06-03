@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'core/di/injection.dart';
-import 'providers/servico_autenticacao.dart';
-import 'features/homepage/presentation/providers/add_cache_notifier.dart';
-import 'features/homepage/presentation/providers/cache_notifier.dart';
+import 'package:projeto_integrador/providers/servico_autenticacao.dart';
+import 'package:projeto_integrador/features/homepage/presentation/providers/add_cache_notifier.dart';
+import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

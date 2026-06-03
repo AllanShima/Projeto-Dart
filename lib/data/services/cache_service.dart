@@ -1,8 +1,8 @@
-import 'dart:convert';
+// import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
 
-import '../../core/http/api_client.dart';
+// import '../../core/http/api_client.dart';
 import '../../models/cachepoint.dart';
 
 import 'package:projeto_integrador/models/enums.dart';
@@ -90,10 +90,9 @@ List<CachePoint> cacheList = [
 
 class CacheService {
 
-  
-  const CacheService(this._client);
+  // const CacheService(this._client);
 
-  final http.Client _client;
+  // final http.Client _client;
 
   // GET /caches
   Future<List<CachePoint>> listarCaches({

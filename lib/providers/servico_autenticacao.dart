@@ -6,9 +6,9 @@ import '../../db/dao/user_dao.dart';
 import '../../models/user.dart';
 
 class ServicoAutenticacao extends ChangeNotifier {
-  ServicoAutenticacao(this._userDao, this._userService);
+  ServicoAutenticacao(this._userService);
 
-  final UserDao _userDao;
+  // final UserDao _userDao;
   final UserService _userService;
 
   User? _currentUser;
@@ -30,12 +30,14 @@ class ServicoAutenticacao extends ChangeNotifier {
       _token = result.token;
       _autenticado = true;
 
+      /*
       // Persiste localmente para acesso offline
       try {
         await _userDao.insert({...result.user.toMap(), 'password': password});
       } catch (_) {
         await _userDao.update(result.user.id, result.user.toMap());
       }
+      */
 
       notifyListeners();
       return true;
@@ -58,6 +60,7 @@ class ServicoAutenticacao extends ChangeNotifier {
   }
 
   Future<bool> _loginLocal(String email, String password) async {
+    /*
     try {
       final row = await _userDao.getByEmail(email);
       if (row == null) {
@@ -80,6 +83,10 @@ class ServicoAutenticacao extends ChangeNotifier {
       notifyListeners();
       return false;
     }
+    */
+    _erro = 'Sem conexão de rede disponível.';
+    notifyListeners();
+    return false;
   }
 
   Future<bool> register(String email, String password, String name) async {
@@ -95,7 +102,7 @@ class ServicoAutenticacao extends ChangeNotifier {
       _token = result.token;
       _autenticado = true;
 
-      await _userDao.insert({...result.user.toMap(), 'password': password});
+      // await _userDao.insert({...result.user.toMap(), 'password': password});
 
       notifyListeners();
       return true;

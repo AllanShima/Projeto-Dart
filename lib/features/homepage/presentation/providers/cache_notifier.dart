@@ -10,14 +10,14 @@ import 'package:projeto_integrador/features/homepage/domain/models/user_cache_pr
 
 class CacheNotifier extends ChangeNotifier {
   CacheNotifier(
-    this._cachepointDao,
-    this._progressDao,
+    // this._cachepointDao,
+    // this._progressDao,
     this._cacheService,
     this._progressService,
   );
 
-  final CachepointDao _cachepointDao;
-  final UserCacheProgressDao _progressDao;
+  // final CachepointDao _cachepointDao;
+  // final UserCacheProgressDao _progressDao;
   final CacheService _cacheService;
   final ProgressService _progressService;
 
@@ -43,6 +43,7 @@ class CacheNotifier extends ChangeNotifier {
     notifyListeners();
 
     try {
+      /*
       List<Map<String, dynamic>> cachepointRows;
 
       if (await _cachepointDao.cacheLocalValido()) {
@@ -91,6 +92,34 @@ class CacheNotifier extends ChangeNotifier {
               : null,
         );
       }).toList();
+      */
+
+      final remotosCaches = await _cacheService.listarCaches(
+        token: _token,
+        lat: lat,
+        lng: lng,
+        raioKm: raioKm,
+      );
+
+      final remotosProgresso = await _progressService.listarProgresso(
+        token: _token,
+        userId: _userId,
+      );
+
+      final progressMap = {
+        for (final p in remotosProgresso) p.cachepointId: p,
+      };
+
+      _userCaches = remotosCaches.map((cachepoint) {
+        final progress = progressMap[cachepoint.id];
+        return UserCacheProgress(
+          cache: cachepoint,
+          userId: userId,
+          isFavorited: progress?.isFavorited ?? false,
+          isFound: progress?.isFound ?? false,
+          foundAt: progress?.foundAt,
+        );
+      }).toList();
     } on AppException catch (e) {
       erro = e.mensagem;
     } catch (e) {
@@ -111,6 +140,7 @@ class CacheNotifier extends ChangeNotifier {
     _userCaches[index] = updated;
     notifyListeners();
 
+    /*
     await _progressDao.upsert(
       userId: _userId,
       cachepointId: cachepointId,
@@ -118,6 +148,7 @@ class CacheNotifier extends ChangeNotifier {
       isFound: updated.isFound,
       foundAt: updated.foundAt,
     );
+    */
 
     try {
       await _progressService.atualizarFavorito(
@@ -143,6 +174,7 @@ class CacheNotifier extends ChangeNotifier {
     _userCaches[index] = updated;
     notifyListeners();
 
+    /*
     await _progressDao.upsert(
       userId: _userId,
       cachepointId: cachepointId,
@@ -150,6 +182,7 @@ class CacheNotifier extends ChangeNotifier {
       isFound: updated.isFound,
       foundAt: updated.foundAt,
     );
+    */
 
     if (newIsFound) {
       try {
@@ -165,8 +198,10 @@ class CacheNotifier extends ChangeNotifier {
   }
 
   Future<void> addNewCache(CachePoint cachepoint) async {
+    /*
     await _cachepointDao.insert(cachepoint.toMap());
     await _cachepointDao.invalidarCache();
+    */
     _userCaches.add(UserCacheProgress(cache: cachepoint, userId: _userId));
     notifyListeners();
   }
