@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
 import 'package:projeto_integrador/features/homepage/presentation/providers/cache_notifier.dart';
+import 'package:projeto_integrador/features/homepage/presentation/screens/cameraview_modal_screen.dart';
+import 'package:projeto_integrador/features/homepage/presentation/screens/viewqrcode_modal_screen.dart';
 import 'package:projeto_integrador/models/cachepoint.dart';
+import 'package:projeto_integrador/providers/servico_autenticacao.dart';
 import 'package:provider/provider.dart';
 
 class _MetricCard extends StatelessWidget {
@@ -35,8 +38,9 @@ class CacheDetailCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.read<ServicoAutenticacao>();
+
     final CachePoint cache = usercache.cache;
-    context.watch<CacheNotifier>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,10 +138,7 @@ class CacheDetailCard extends StatelessWidget {
         Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 25),
-            child: FilledButton(
-              onPressed: !usercache.isFound
-                  ? () => context.read<CacheNotifier>().toggleFound(cache.id)
-                  : null,
+            child: FilledButton.icon(
               style: FilledButton.styleFrom(
                 backgroundColor: Colors.blue,
                 foregroundColor: Colors.white,
@@ -149,7 +150,14 @@ class CacheDetailCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: const Text('Marcar como encontrado'),
+              onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => CameraViewModal(usercache: usercache, cache: cache),
+                  );
+                },
+              label: const Text("Escanear QrCode"),
+              icon: const Icon(Icons.qr_code_scanner_outlined),
             ),
           ),
         ),
@@ -206,49 +214,108 @@ class CacheDetailCard extends StatelessWidget {
             ],
           ),
         ),
+        
         const SizedBox(height: 16),
-
         // QR Code content
         if (cache.tip != null)
           Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.yellow[100],
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.yellow[300]!, width: 1),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.map, size: 18, color: Colors.yellow[800]),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Dica',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                        color: Colors.yellow[900],
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.yellow[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.yellow[300]!, width: 1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.map, size: 18, color: Colors.yellow[800]),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Dica',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                          color: Colors.yellow[900],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  cache.tip!,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.yellow[900],
-                    height: 1.4,
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    cache.tip!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.yellow[900],
+                      height: 1.4,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
+        const SizedBox(height: 16),
+        if (cache.creatorId == auth.currentUser!.id)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.blue[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue[300]!, width: 1),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.qr_code, size: 18, color: Colors.blue[800]),
+                      const SizedBox(width: 8),
+                      Text(
+                        'QrCode',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: Colors.blue[900],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Acesse o seguinte o link do código QR para colar perto ou junto ao cache!",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue[900],
+                          height: 1.4,
+                        ),
+                      ),
+                      Tooltip(
+                        message: cache.qrCodeContent,
+                        child: IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ViewQrCodeModal(cache: cache),
+                            );
+                          },
+                          icon: Icon(Icons.link, color: Colors.blue[900]),
+                          iconSize: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
 
         // Rodapé
         Padding(

@@ -99,7 +99,6 @@ class _HomepageHeaderDesktop extends StatelessWidget {
 
         const SizedBox(width: 10),
 
-        // Botão "Novo"
         FilledButton.icon(
           style: FilledButton.styleFrom(
             backgroundColor: Colors.blue[800],

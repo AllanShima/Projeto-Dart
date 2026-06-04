@@ -42,11 +42,14 @@ class _AddCacheFormState extends State<AddCacheForm> {
     super.dispose();
   }
 
-  Future<void> _submit(AddCacheNotifier formNotifier) async {
+Future<void> _submit(AddCacheNotifier formNotifier) async {
     if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
 
     final auth = context.read<ServicoAutenticacao>();
+
+    // Pass the text only if the user explicitly chose to add a hint
+    final String? tipValue = formNotifier.hasHint ? _hintController.text : null;
 
     final ok = await formNotifier.submit(
       token: auth.token ?? '',
@@ -55,6 +58,7 @@ class _AddCacheFormState extends State<AddCacheForm> {
       latitude: -23.5505,
       longitude: -46.6333,
       creatorId: auth.currentUser?.id ?? '',
+      tip: tipValue, // ✅ Fixed! The tip is now sent down to the service layer.
     );
 
     if (!mounted) return;
