@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/exceptions/app_exceptions.dart';
 import '../../data/services/user_service.dart';
-import '../../db/dao/user_dao.dart';
+// import '../../db/dao/user_dao.dart';
 import '../../models/user.dart';
 
 class ServicoAutenticacao extends ChangeNotifier {

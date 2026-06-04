@@ -8,7 +8,11 @@ import 'package:provider/provider.dart';
 class CameraViewModal extends StatefulWidget {
   final UserCacheProgress usercache;
   final CachePoint cache;
-  const CameraViewModal({required this.usercache, required this.cache, super.key});
+  const CameraViewModal({
+    required this.usercache,
+    required this.cache,
+    super.key,
+  });
 
   @override
   State<CameraViewModal> createState() => _CameraViewModalState();
@@ -72,7 +76,7 @@ class _CameraViewModalState extends State<CameraViewModal> {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
@@ -82,11 +86,12 @@ class _CameraViewModalState extends State<CameraViewModal> {
                       child: MobileScanner(
                         controller: _controller,
                         onDetect: (barcodeCapture) {
-                          final List<Barcode> barcodes = barcodeCapture.barcodes;
+                          final List<Barcode> barcodes =
+                              barcodeCapture.barcodes;
                           if (barcodes.isNotEmpty) {
                             final String? qrCodeValue = barcodes.first.rawValue;
                             if (qrCodeValue != null) {
-                              _controller.stop(); 
+                              _controller.stop();
                               _onQRCodeDetected(qrCodeValue);
                             }
                           }
@@ -105,21 +110,30 @@ class _CameraViewModalState extends State<CameraViewModal> {
   }
 
   void _onQRCodeDetected(String value) {
+    final bool isCorrectCache = value == widget.cache.qrCodeContent;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('QR Code Detectado!'),
-        content: Text('Conteúdo: $value'),
+        title: Text(
+          isCorrectCache ? '✅ Cache Encontrado!' : '❌ QR Code Inválido',
+        ),
+        content: Text(
+          isCorrectCache
+              ? 'Parabéns! Você encontrou o cache "${widget.cache.title}"!'
+              : 'Este QR Code não corresponde ao cache esperado.',
+        ),
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); 
-              Navigator.of(context).pop(); 
-              // Não apagar: referencia
-              if (!widget.usercache.isFound) {
-                () => context.read<CacheNotifier>().toggleFound(widget.cache.id);
+              Navigator.of(context).pop();
+              if (isCorrectCache) {
+                Navigator.of(context).pop();
+                if (!widget.usercache.isFound) {
+                  context.read<CacheNotifier>().toggleFound(widget.cache.id);
+                }
               } else {
-                null;
+                _controller.start();
               }
             },
             child: const Text('OK'),

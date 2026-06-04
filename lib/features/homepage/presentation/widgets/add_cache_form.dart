@@ -48,7 +48,6 @@ Future<void> _submit(AddCacheNotifier formNotifier) async {
 
     final auth = context.read<ServicoAutenticacao>();
 
-    // Pass the text only if the user explicitly chose to add a hint
     final String? tipValue = formNotifier.hasHint ? _hintController.text : null;
 
     final ok = await formNotifier.submit(
@@ -58,7 +57,7 @@ Future<void> _submit(AddCacheNotifier formNotifier) async {
       latitude: -23.5505,
       longitude: -46.6333,
       creatorId: auth.currentUser?.id ?? '',
-      tip: tipValue, // ✅ Fixed! The tip is now sent down to the service layer.
+      tip: tipValue,
     );
 
     if (!mounted) return;

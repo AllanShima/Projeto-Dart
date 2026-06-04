@@ -13,7 +13,7 @@ class CachePoint {
     required this.creatorId,
     required this.createdAt,
     this.status = CachePointStatus.active,
-    this.tip, // Added optional field
+    this.tip,
   });
 
   final String id;
@@ -32,7 +32,7 @@ class CachePoint {
   final String creatorId;
   final DateTime createdAt;
   final CachePointStatus status;
-  final String? tip; // Added property definition
+  final String? tip;
 
   // ---------------------------------------------------------------------------
   // Desserialização
@@ -55,7 +55,7 @@ class CachePoint {
       status: CachePointStatus.fromString(
         json['status'] as String? ?? 'active',
       ),
-      tip: json['tip'] as String?, // Mapped from Json
+      tip: json['tip'] as String?,
     );
   }
 
@@ -72,7 +72,7 @@ class CachePoint {
       'creator_id': creatorId,
       'created_at': createdAt.toIso8601String(),
       'status': status.toJson(),
-      'tip': tip, // Included in Json output
+      'tip': tip,
     };
   }
 
@@ -88,7 +88,7 @@ class CachePoint {
     'creatorId': creatorId,
     'createdAt': createdAt.toIso8601String(),
     'status': status.name,
-    'tip': tip, // Included in SQLite Map format
+    'tip': tip,
   };
 
   factory CachePoint.fromMap(Map<String, dynamic> map) => CachePoint(
@@ -103,7 +103,7 @@ class CachePoint {
     creatorId: map['creatorId'] as String,
     createdAt: DateTime.parse(map['createdAt'] as String),
     status: CachePointStatus.fromString(map['status'] as String),
-    tip: map['tip'] as String?, // Mapped from local DB Map
+    tip: map['tip'] as String?,
   );
 
   CachePoint copyWith({
@@ -118,7 +118,7 @@ class CachePoint {
     String? creatorId,
     DateTime? createdAt,
     CachePointStatus? status,
-    String? tip, // Enabled flexibility inside copyWith
+    String? tip,
   }) {
     return CachePoint(
       id: id ?? this.id,
@@ -153,7 +153,7 @@ class CachePoint {
     creatorId,
     createdAt,
     status,
-    tip, // Updated hash
+    tip,
   );
 
   @override

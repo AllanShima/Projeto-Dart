@@ -16,13 +16,11 @@ final sl = GetIt.instance;
 Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<http.Client>(() => http.Client());
 
-  // Services with their required HTTP clients
   sl.registerLazySingleton<CacheService>(() => CacheService());
   sl.registerLazySingleton<EvaluationService>(() => EvaluationService());
   sl.registerLazySingleton<UserService>(() => UserService());
   sl.registerLazySingleton<ProgressService>(() => ProgressService());
 
-  // Active registrations updated to only use services (No DAOs)
   sl.registerLazySingleton<ServicoAutenticacao>(
     () => ServicoAutenticacao(sl<UserService>()), 
   );

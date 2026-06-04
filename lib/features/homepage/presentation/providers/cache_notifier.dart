@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:projeto_integrador/core/exceptions/app_exceptions.dart';
 import 'package:projeto_integrador/data/services/cache_service.dart';
 import 'package:projeto_integrador/data/services/progress_service.dart';
-import 'package:projeto_integrador/db/dao/cachepoint_dao.dart';
-import 'package:projeto_integrador/db/dao/user_cache_progress_dao.dart';
+// import 'package:projeto_integrador/db/dao/cachepoint_dao.dart';
+// import 'package:projeto_integrador/db/dao/user_cache_progress_dao.dart';
 import 'package:projeto_integrador/models/cachepoint.dart';
 import 'package:projeto_integrador/features/homepage/domain/models/user_cache_progress.dart';
 

@@ -92,7 +92,7 @@ List<CachePoint> cacheList = [
 ];
 
 class CacheService {
-  CacheService(); // Constructor matches setupServiceLocator invocation completely
+  CacheService();
 
   // GET /caches
   Future<List<CachePoint>> listarCaches({
@@ -177,7 +177,7 @@ class CacheService {
       creatorId: "user_logged",
       createdAt: DateTime.now(),
       status: CachePointStatus.active,
-      tip: tip, // Added property mapping assignment
+      tip: tip,
     );
     cacheList.add(novoCache);
     return novoCache;
@@ -223,7 +223,7 @@ class CacheService {
         creatorId: cacheAtual.creatorId,
         createdAt: cacheAtual.createdAt,
         status: status ?? cacheAtual.status,
-        tip: cacheAtual.tip, // Maintained field integrity during updates
+        tip: cacheAtual.tip,
       );
       cacheList[index] = cacheAtualizado;
       return cacheAtualizado;
