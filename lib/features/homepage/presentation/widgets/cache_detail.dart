@@ -150,12 +150,13 @@ class CacheDetailCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              onPressed: () {
+              onPressed: !usercache.isFound
+                ? () {
                   showDialog(
                     context: context,
                     builder: (context) => CameraViewModal(usercache: usercache, cache: cache),
                   );
-                },
+                } : null,
               label: const Text("Escanear QrCode"),
               icon: const Icon(Icons.qr_code_scanner_outlined),
             ),
@@ -205,6 +206,35 @@ class CacheDetailCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 cache.description,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.grey[700],
+                  height: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+      
+        const SizedBox(height: 24),
+        
+        // Criador
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Criador do Cache',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                cache.creatorId,
                 style: TextStyle(
                   fontSize: 13,
                   color: Colors.grey[700],
