@@ -1,13 +1,24 @@
 # GeoQuest
 
+## Preview
+
+Members & Responsabilities:
+- Allan Shinhama, 
+
+## Documentation
+- [Português](#português)
+- [English](#english)
+
+---
+
+# Português
+> Projeto final de semestre em Flutter
 
 ## Funcionamento
 * *Login*: Usuário faz o login, não possui autenticação por ser dados mockados;
 * *Criação do Cache*: Usuário logado cria um cache novo com qualquer dado;
 * *Download do qr code*: No cache, o usuário logado consegue fazer o download do qrcode e colocar junto ao cache no endereço imposto;
 * *Escaneamento*: Pra marcá-lo como encontrado, os usuários clicam no botão de "Escanear QrCode" do cache escolhido, e aponta o qrcode com a câmera (disponível em web somente);
-
----
 
 ## 📌 Problemas que resolve
 * *Incentivo para atividades livres:* Estimula a exploração e o movimento físico.
@@ -28,3 +39,7 @@
 * *Leitura de QR Code:* Módulo de scanner integrado ao app.
 * *Gerador de QR Code:* Ferramenta para criar os códigos de novos pontos de cache.
 
+---
+
+# English
+> Semester's final project in flutter
