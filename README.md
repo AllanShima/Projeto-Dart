@@ -2,8 +2,12 @@
 
 ## Preview
 
+
 Members & Responsabilities:
-- Allan Shinhama, 
+- Allan Shinhama, Figma web and mobile design - github.com/AllanShima
+- Guilherme Ryu, Flutter widgets - github.com/Ryzoppi
+- Hugo Facchini, Flutter widgets - github.com/UInfinitu
+- Renan, Flutter widgets - github.com/RenanHikaru
 
 ## Documentation
 - [Português](#português)
@@ -43,3 +47,29 @@ Members & Responsabilities:
 
 # English
 > Semester's final project in flutter
+
+## Operation
+* *Login*: The user logs in; there is no authentication mechanism as the application uses mocked data.
+* *Cache Creation*: Once logged in, the user can create a new cache using any data.
+* *QR Code Download*: Within the cache details, the logged-in user can download a QR code to place alongside the physical cache at its designated location.
+* *Scanning*: To mark a cache as found, users click the "Scan QR Code" button for the selected cache and point their camera at the code (available on web only).
+
+## 📌 Problems It Solves
+* *Encouraging Outdoor Activities*: Stimulates exploration and physical movement.
+* *Socialization Opportunities*: Connects people through the discovery of new locations.
+* *Discovering New Places*: Fosters visits to local landmarks, scenic spots, or hidden gems around the city.
+
+## 👥 Target Audience
+* Anyone with free time looking for adventure or a new form of leisure.
+
+## 🚀 Key Features
+* *Creating Cache Points on the Map*: Allows users to hide and mark new challenges.
+* *Cache Ratings*: A rating and feedback system for the community.
+* *QR Code Cache Scanning*: In-person validation to confirm a cache has been found.
+
+## 🛠️ Technical Resources / Features
+* *GPS*: Used for geolocation and navigating to target points.
+* *Camera*: Used for interacting with physical codes.
+* *QR Code Scanning*: Scanner module integrated directly into the application.
+* *QR Code Generator*: A tool to create codes for newly established cache points.
+
