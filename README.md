@@ -2,6 +2,19 @@
 
 ## Preview
 
+### Home page
+<img width="1919" height="908" alt="image" src="https://github.com/user-attachments/assets/94c4dde5-c591-409a-b92b-94ba7196f788" />
+
+### New Cache modal
+<img width="1919" height="909" alt="image" src="https://github.com/user-attachments/assets/efe90b7f-d3e1-4ac5-827a-0d48e57f893a" />
+
+### Login / Sign up page
+<img width="1919" height="911" alt="image" src="https://github.com/user-attachments/assets/3703b53b-d88f-4d86-851f-14000f6d71a8" />
+
+## Figma
+<img width="991" height="804" alt="image" src="https://github.com/user-attachments/assets/09a20bbe-82bf-4f24-b1c3-fa1b5c079a69" />
+
+#### Link: https://www.figma.com/community/file/1651059827868210061
 
 Members & Responsabilities:
 - Allan Shinhama, Figma web and mobile design - github.com/AllanShima
